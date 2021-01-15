@@ -1,0 +1,50 @@
+﻿<UserControl
+    x:Class="M3U8Downloader.Modules.MainModule.Views.TaskList"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:core="clr-namespace:M3U8Downloader.Core;assembly=M3U8Downloader.Core"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:M3U8Downloader.Modules.MainModule.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
+    xmlns:prism="http://prismlibrary.com/"
+    MinWidth="{x:Static core:RegionSizes.TaskListWidth_Size}"
+    prism:ViewModelLocator.AutoWireViewModel="True"
+    Background="LightGray">
+    <UserControl.Resources>
+        <DataTemplate x:Key="Task_Template">
+            <StackPanel>
+                <DockPanel LastChildFill="True">
+                    <Label Content="{Binding State}" DockPanel.Dock="Right" />
+                    <TextBlock
+                        Text="{Binding TimeStamp}"
+                        TextTrimming="CharacterEllipsis"
+                        TextWrapping="NoWrap" />
+                </DockPanel>
+                <TextBlock
+                    HorizontalAlignment="Left"
+                    Text="{Binding FileName}"
+                    TextTrimming="CharacterEllipsis"
+                    TextWrapping="NoWrap" />
+                <metro:MetroProgressBar Height="8" Value="{Binding Progress}" />
+                <TextBlock
+                    HorizontalAlignment="Left"
+                    Text="{Binding Uri}"
+                    TextTrimming="CharacterEllipsis"
+                    TextWrapping="NoWrap" />
+                <TextBlock
+                    HorizontalAlignment="Left"
+                    Text="{Binding TargetFolder}"
+                    TextTrimming="CharacterEllipsis"
+                    TextWrapping="NoWrap" />
+            </StackPanel>
+        </DataTemplate>
+    </UserControl.Resources>
+    <ListBox
+        Height="{Binding ContentHeight}"
+        ItemTemplate="{StaticResource Task_Template}"
+        ItemsSource="{Binding TaskList}"
+        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+        ScrollViewer.VerticalScrollBarVisibility="Auto"
+        SelectedItem="{Binding SelectedTask}" />
+</UserControl>

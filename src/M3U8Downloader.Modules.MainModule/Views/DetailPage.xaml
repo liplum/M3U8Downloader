@@ -1,0 +1,104 @@
+﻿<UserControl
+    x:Class="M3U8Downloader.Modules.MainModule.Views.DetailPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:c="clr-namespace:CalcBinding;assembly=CalcBinding"
+    xmlns:core="clr-namespace:M3U8Downloader.Core;assembly=M3U8Downloader.Core"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:lex="http://wpflocalizeextension.codeplex.com"
+    xmlns:local="clr-namespace:M3U8Downloader.Modules.MainModule.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
+    xmlns:prism="http://prismlibrary.com/"
+    xmlns:task="clr-namespace:M3U8Downloader.Core.Models;assembly=M3U8Downloader.Core.Models"
+    lex:LocalizeDictionary.DesignCulture="en"
+    lex:ResxLocalizationProvider.DefaultAssembly="M3U8Downloader.Modules.MainModule"
+    lex:ResxLocalizationProvider.DefaultDictionary="Resources"
+    prism:ViewModelLocator.AutoWireViewModel="True"
+    Background="DarkGray"
+    mc:Ignorable="d">
+    <StackPanel>
+        <StackPanel.Resources>
+            <Style BasedOn="{StaticResource MahApps.Styles.Button.Flat}" TargetType="Button">
+                <Setter Property="Margin" Value="3" />
+            </Style>
+            <Style BasedOn="{StaticResource MahApps.Styles.TextBox}" TargetType="TextBox">
+                <Setter Property="Margin" Value="3" />
+                <Setter Property="metro:TextBoxHelper.ClearTextButton" Value="True" />
+                <!--<Setter Property="IsEnabled" Value="{c:Binding 'CurrentTask.State == task:TaskState.NOT_STARTED || CurrentTask.State == task:TaskState.STOPPED || CurrentTask.State == task:TaskState.ERROR || CurrentTask.State == task:TaskState.EDITING'}" />-->
+                <Setter Property="IsEnabled" Value="{Binding CanEdit}" />
+            </Style>
+            <Style BasedOn="{StaticResource MahApps.Styles.Label}" TargetType="Label">
+                <Setter Property="Margin" Value="3" />
+            </Style>
+            <Style TargetType="metro:MetroProgressBar">
+                <Setter Property="Margin" Value="8,2,8,2" />
+            </Style>
+        </StackPanel.Resources>
+        <StackPanel>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Button
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Content="{lex:Loc DetailPage_Address_Button}" />
+                <TextBox
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Margin="2"
+                    metro:TextBoxHelper.Watermark="{lex:Loc DetailPage_Address_Watermark}"
+                    Text="{Binding Address, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
+                    <TextBox.InputBindings>
+                        <KeyBinding Key="Enter" Command="{Binding RecordDetailsCommand}" />
+                    </TextBox.InputBindings>
+                </TextBox>
+                <Label
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Content="{lex:Loc DetailPage_FileName_Label}" />
+                <TextBox
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Margin="2"
+                    metro:TextBoxHelper.Watermark="{lex:Loc DetailPage_FileName_Watermark}"
+                    Text="{Binding FileName, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
+                    <TextBox.InputBindings>
+                        <KeyBinding Key="Enter" Command="{Binding RecordDetailsCommand}" />
+                    </TextBox.InputBindings>
+                </TextBox>
+                <Button
+                    Grid.Row="2"
+                    Grid.Column="0"
+                    Command="{Binding SelectOrOpenTargetFolderCommand}"
+                    Content="{lex:Loc DetailPage_Target_Button}" />
+                <Label
+                    Grid.Row="2"
+                    Grid.Column="1"
+                    Content="{c:Binding 'CurrentTask.IsDefaultTargetFolder ? DefaultTargetFolderText : CurrentTask.TargetFolder'}" />
+            </Grid>
+            <metro:MetroProgressBar Value="{Binding CurrentTask.Progress}" />
+            <WrapPanel>
+                <Button
+                    Command="{Binding StartOrRetryCommand}"
+                    Content="{lex:Loc DetailPage_Start_Button}"
+                    DockPanel.Dock="Left" />
+                <Button
+                    Command="{Binding StopCommand}"
+                    Content="{lex:Loc DetailPage_Stop_Button}"
+                    DockPanel.Dock="Right" />
+                <Button
+                    Command="{Binding SaveCommand}"
+                    Content="{lex:Loc DetailPage_Save_Button}"
+                    DockPanel.Dock="Right" />
+            </WrapPanel>
+        </StackPanel>
+    </StackPanel>
+</UserControl>

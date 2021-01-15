@@ -1,0 +1,37 @@
+﻿<UserControl
+    x:Class="M3U8Downloader.Modules.MainModule.Views.Menu"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:core="clr-namespace:M3U8Downloader.Core;assembly=M3U8Downloader.Core"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:M3U8Downloader.Modules.MainModule.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
+    xmlns:prism="http://prismlibrary.com/"
+    MinWidth="600"
+    MinHeight="32"
+    prism:ViewModelLocator.AutoWireViewModel="True"
+    mc:Ignorable="d">
+    <StackPanel Orientation="Horizontal">
+        <Button
+            Command="{Binding StartAllTasksCommand}"
+            Content="Start"
+            Style="{DynamicResource MahApps.Styles.Button.Circle}" />
+        <Button
+            Command="{Binding StopAllTasksCommand}"
+            Content="Stop"
+            Style="{DynamicResource MahApps.Styles.Button.Circle}" />
+        <Button
+            Command="{Binding AddNewTaskCommand}"
+            Content="Add"
+            Style="{DynamicResource MahApps.Styles.Button.Circle}" />
+        <Button
+            Command="{Binding RemoveCurrentTaskCommand}"
+            Content="Remove"
+            Style="{DynamicResource MahApps.Styles.Button.Circle}" />
+        <Button
+            Command="{Binding OpenSettingCommand}"
+            Content="Setting"
+            Style="{DynamicResource MahApps.Styles.Button.Circle}" />
+    </StackPanel>
+</UserControl>

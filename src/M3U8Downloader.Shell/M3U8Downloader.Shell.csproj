@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <AppendTargetFrameworkToOutputPath>Flase</AppendTargetFrameworkToOutputPath>
+    <UseWPF>true</UseWPF>
+    <AssemblyName>M3U8Downloader.Shell</AssemblyName>
+    <Authors>Liplum</Authors>
+    <Company>Liplum</Company>
+    <Product>M3U8Downloader</Product>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>..\Build\Debug\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutputPath>..\Build\Release\</OutputPath>
+    <DebugType>none</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="CalcBinding" Version="2.5.2" />
+    <PackageReference Include="MahApps.Metro" Version="2.4.3" />
+    <PackageReference Include="Prism.Unity" Version="8.0.0.1909" />
+    <PackageReference Include="WPFLocalizeExtension" Version="3.8.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\M3U8Downloader.Core.Events\M3U8Downloader.Core.Events.csproj" />
+    <ProjectReference Include="..\M3U8Downloader.Core\M3U8Downloader.Core.csproj" />
+    <ProjectReference Include="..\M3U8Downloader.Modules.MainModule\M3U8Downloader.Modules.MainModule.csproj" />
+    <ProjectReference Include="..\M3U8Downloader.Service.Services\M3U8Downloader.Service.Services.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,61 @@
+﻿<metro:MetroWindow
+    x:Class="M3U8Downloader.Shell.Views.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:calc="clr-namespace:CalcBinding;assembly=CalcBinding"
+    xmlns:core="clr-namespace:M3U8Downloader.Core;assembly=M3U8Downloader.Core"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
+    xmlns:prism="http://prismlibrary.com/"
+    x:Name="MainWin"
+    Title="{Binding Title}"
+    Width="600"
+    Height="482"
+    MinWidth="600"
+    MinHeight="{x:Static core:RegionSizes.TaskListHeight_Size}"
+    prism:ViewModelLocator.AutoWireViewModel="True"
+    WindowStartupLocation="CenterScreen">
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="SizeChanged">
+            <i:InvokeCommandAction Command="{Binding WindowSizeChangedCommand}" CommandParameter="{Binding ElementName=MainWindowContent}" />
+        </i:EventTrigger>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding WindowSizeChangedCommand}" CommandParameter="{Binding ElementName=MainWindowContent}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+
+    <metro:MetroWindow.Flyouts>
+        <metro:FlyoutsControl prism:RegionManager.RegionName="{x:Static core:RegionNames.Settings_Region}" />
+    </metro:MetroWindow.Flyouts>
+    
+    <Grid x:Name="MainWindowContent">
+        <StackPanel HorizontalAlignment="Stretch">
+
+            <ContentControl prism:RegionManager.RegionName="{x:Static core:RegionNames.Menu_Region}" />
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition
+                        Width="auto"
+                        MinWidth="{x:Static core:RegionSizes.TaskListWidth_Size}"
+                        MaxWidth="300" />
+                    <ColumnDefinition Width="3" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <ContentControl
+                    Grid.Column="0"
+                    Margin="0,0,3,0"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    prism:RegionManager.RegionName="{x:Static core:RegionNames.TaskList_Region}" />
+                <GridSplitter Grid.Column="1" />
+                <ContentControl
+                    Grid.Column="2"
+                    Margin="0,3,0,0"
+                    prism:RegionManager.RegionName="{x:Static core:RegionNames.DetailPage_Region}"
+                    Visibility="{calc:Binding 'DetailPageDisplayed',
+                                              FalseToVisibility=Hidden}" />
+            </Grid>
+        </StackPanel>
+    </Grid>
+</metro:MetroWindow>

@@ -1,12 +1,12 @@
 ﻿using M3U8Downloader.Core;
 using M3U8Downloader.Core.MVVM;
-using M3U8Downloader.Modules.MainModule.Views;
+using M3U8Downloader.MainModule.Views;
 using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Regions;
 using Unity;
 
-namespace M3U8Downloader.Modules.MainModule
+namespace M3U8Downloader.MainModule
 {
     [Module(ModuleName = "MainModule")]
     [ModuleDependency("VideoMergeModule")]

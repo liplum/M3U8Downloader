@@ -1,7 +1,17 @@
 ﻿using M3U8Downloader.Core;
 using M3U8Downloader.Core.infrastructures;
-using M3U8Downloader.Core.Interfaces;
-using M3U8Downloader.Service.Services;
+using M3U8Downloader.Core.Interfaces.Cache;
+using M3U8Downloader.Core.Interfaces.Global;
+using M3U8Downloader.Core.Interfaces.IO;
+using M3U8Downloader.Core.Interfaces.Manager;
+using M3U8Downloader.Core.Interfaces.Net;
+using M3U8Downloader.Core.Interfaces.Tool;
+using M3U8Downloader.Service.Services.Cache;
+using M3U8Downloader.Service.Services.Global;
+using M3U8Downloader.Service.Services.IO;
+using M3U8Downloader.Service.Services.Manager;
+using M3U8Downloader.Service.Services.Net;
+using M3U8Downloader.Service.Services.Tool;
 using M3U8Downloader.Shell.Views;
 using Prism.Events;
 using Prism.Ioc;
@@ -30,32 +40,30 @@ namespace M3U8Downloader.Shell
         {
             base.InitializeShell(shell);
             var regionManager = Container.Resolve<IRegionManager>();
-            regionManager.RegisterViewWithRegion(RegionNames.Settings_Region,typeof(Settings));
+            regionManager.RegisterViewWithRegion(RegionNames.Settings_Region, typeof(Settings));
         }
         //2
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterSingleton<IEventAggregator, EventAggregator>();
 
-            containerRegistry.RegisterSingleton<IM3U8DownloadTaskToolService, M3U8DownloadTaskToolService>();
+            containerRegistry.RegisterSingleton<IDownloadTaskToolService, DownloadTaskToolService>();
 
             containerRegistry.RegisterSingleton<IDownloadTaskManageService, DownloadTaskManageService>();
 
-            containerRegistry.RegisterSingleton<IM3U8FileContentAnalyseService, M3U8FileContentAnalyseService>();
-
             containerRegistry.RegisterSingleton<IUriService, UriService>();
 
-            containerRegistry.RegisterSingleton<ICacheService, CacheService>();
+            containerRegistry.RegisterSingleton<ISpanDataCacheService, SpanDataCacheService>();
 
             containerRegistry.RegisterSingleton<IConfiguration, Configuration>();
 
-            containerRegistry.RegisterSingleton<IM3U8TaskDatabaseService, M3U8TaskDatabaseService>();
-
-            containerRegistry.RegisterSingleton<IDownloadService, HttpDownloadService>();
+            containerRegistry.RegisterSingleton<IM3U8TaskCacheService, M3U8TaskCacheService>();
 
             containerRegistry.RegisterSingleton<IVideoComposeService, VideoComposeService>();
 
             containerRegistry.Register<IM3U8DownloadTaskComparer, M3U8DownloadTaskComparer>();
+
+            containerRegistry.Register<IDownloadTaskStateManageService, DownloadTaskStateMachineService>();
 
             containerRegistry.RegisterSingleton<ILocalizeHelperService, LocalizeHelperService>();
 

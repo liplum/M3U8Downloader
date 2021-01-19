@@ -1,5 +1,6 @@
 ﻿using M3U8Downloader.Core.Events;
-using M3U8Downloader.Core.Interfaces;
+using M3U8Downloader.Core.Interfaces.Manager;
+using M3U8Downloader.Core.Interfaces.Tool;
 using M3U8Downloader.Core.Models;
 using M3U8Downloader.Core.MVVM;
 using Microsoft.WindowsAPICodePack.Dialogs;
@@ -12,15 +13,16 @@ using System.IO;
 using System.Reflection;
 using WPFLocalizeExtension.Engine;
 
-namespace M3U8Downloader.Modules.MainModule.ViewModels
+namespace M3U8Downloader.MainModule.ViewModels
 {
     internal class DetailPageViewModel : ViewModelBase
     {
         private readonly IContainerProvider _provider;
         private readonly IEventAggregator _eventAggregator;
-        private readonly IM3U8DownloadTaskToolService _tool;
+        private readonly IDownloadTaskToolService _tool;
         private readonly IDownloadTaskManageService _taskManager;
         private readonly ILocalizeHelperService _locHelper;
+
 
         private string _resourcesHead;
         private string ResourcesHead
@@ -43,12 +45,12 @@ namespace M3U8Downloader.Modules.MainModule.ViewModels
         {
             _provider = containerProvider;
             _eventAggregator = _provider.Resolve<IEventAggregator>();
-            _tool = _provider.Resolve<IM3U8DownloadTaskToolService>();
+            _tool = _provider.Resolve<IDownloadTaskToolService>();
             _taskManager = _provider.Resolve<IDownloadTaskManageService>();
             _locHelper = _provider.Resolve<ILocalizeHelperService>();
 
             _eventAggregator.GetEvent<DownloadTaskSelectedEvent>().Subscribe(OnDownloadTaskSelected);
-            _eventAggregator.GetEvent<CurrentlyEditedDownloadTaskNeedBeSavedEvent>().Subscribe(OnCurrentlyEditedDownloadTaskNeedBeSaved);
+
             LocalizeDictionary.Instance.PropertyChanged += OnLanguageChanged;
         }
 
@@ -64,7 +66,7 @@ namespace M3U8Downloader.Modules.MainModule.ViewModels
 
         private void OnCurrentTaskStateChanged()
         {
-            CanEdit = _tool.CanEdit(CurrentTask);
+            CanEdit = CurrentTask.State == TaskState.EDITING;
         }
 
         private void OnLanguageChanged(object sender, PropertyChangedEventArgs e)
@@ -77,11 +79,6 @@ namespace M3U8Downloader.Modules.MainModule.ViewModels
             return _locHelper.GetLocalizedString(assemblyName: ResourcesHead, key);
         }
 
-        private void OnCurrentlyEditedDownloadTaskNeedBeSaved(CurrentlyEditedDownloadTaskNeedBeSavedEventArgs args)
-        {
-            SaveCurrentTask();
-        }
-
         private void OnDownloadTaskSelected(DownloadTaskSelectedEventArgs args)
         {
             PreviousTaskHandle();
@@ -92,7 +89,7 @@ namespace M3U8Downloader.Modules.MainModule.ViewModels
                 if (CurrentTask is not null)
                 {
                     CurrentTask.PropertyChanged -= OnCurrentTaskChanged;
-                    _taskManager.ReturnPreviousState(CurrentTask);
+                    _taskManager.EndEdit(CurrentTask);
                 }
             }
 
@@ -103,25 +100,8 @@ namespace M3U8Downloader.Modules.MainModule.ViewModels
                 {
                     CurrentTask = selected;
                     CurrentTask.PropertyChanged += OnCurrentTaskChanged;
-                    OnCurrentTaskStateChanged();
-                    Address = CurrentTask.Uri;
-                    FileName = CurrentTask.FileName;
+                    _taskManager.Edit(CurrentTask);
                 }
-            }
-        }
-
-        private void SaveCurrentTask()
-        {
-            if (CurrentTask is not null)
-            {
-                ReflectOnDownloadTask();
-                _taskManager.ReturnPreviousState(CurrentTask);
-            }
-
-            void ReflectOnDownloadTask()
-            {
-                CurrentTask.Uri = Address;
-                CurrentTask.FileName = FileName;
             }
         }
 
@@ -150,35 +130,6 @@ namespace M3U8Downloader.Modules.MainModule.ViewModels
             }
             return target;
         }
-        #region RecordDetailsCommand
-        private DelegateCommand _recordDetailsCommand;
-        public DelegateCommand RecordDetailsCommand =>
-            _recordDetailsCommand ??= new DelegateCommand(ExecuteRecordDetailsCommand);
-
-        void ExecuteRecordDetailsCommand()
-        {
-            SaveCurrentTask();
-        }
-        #endregion
-        #region SaveCommand
-        private DelegateCommand _saveCommand;
-        public DelegateCommand SaveCommand =>
-            _saveCommand ??= new DelegateCommand(ExecuteSaveCommand, CanExecuteSaveCommand).ObservesProperty(() => CurrentTask.State);
-
-        private void ExecuteSaveCommand()
-        {
-            SaveCurrentTask();
-        }
-
-        private bool CanExecuteSaveCommand()
-        {
-            if (CurrentTask is null)
-            {
-                return false;
-            }
-            return _tool.CanSave(CurrentTask);
-        }
-        #endregion
 
         #region SelectOrOpenTargetFolderCommand
         private DelegateCommand _selectOrOpenTargetFolderCommand;
@@ -191,7 +142,6 @@ namespace M3U8Downloader.Modules.MainModule.ViewModels
             {
                 case TaskState.NOT_STARTED:
                 case TaskState.EDITING:
-                case TaskState.STOPPED:
                     {
                         var folder = SelectFolder("Select Folder");
 
@@ -199,7 +149,6 @@ namespace M3U8Downloader.Modules.MainModule.ViewModels
                         {
                             CurrentTask.TargetFolder = folder.FullName;
                             CurrentTask.IsDefaultTargetFolder = false;
-                            SaveCurrentTask();
                         }
                     }
                     break;
@@ -224,9 +173,8 @@ namespace M3U8Downloader.Modules.MainModule.ViewModels
 
         private void ExecuteStartOrRetryCommand()
         {
-            SaveCurrentTask();
-            _eventAggregator.GetEvent<DownloadTaskStateNeedChangeEvent>().Publish(
-                new DownloadTaskStateNeedChangeEventArgs(CurrentTask, DownloadTaskStateNeedChangeEventArgs.NeedChangeMode.NEED_START)
+            _eventAggregator.GetEvent<DownloadTaskActionEvent>().Publish(
+                new DownloadTaskActionEventArgs(CurrentTask, DownloadTaskActionEventArgs.Action.NEED_START)
                 );
         }
 
@@ -240,58 +188,6 @@ namespace M3U8Downloader.Modules.MainModule.ViewModels
             return _tool.CanStart(CurrentTask) || _tool.CanRetry(CurrentTask);
         }
         #endregion
-
-        #region StopCommand
-        private DelegateCommand _stopCommand;
-        public DelegateCommand StopCommand =>
-            _stopCommand ??= new DelegateCommand(ExecuteStopCommand, CanExecuteStopCommand).ObservesProperty(() => CurrentTask.State);
-
-        private void ExecuteStopCommand()
-        {
-            _taskManager.SetState(CurrentTask, TaskState.STOPPED);
-        }
-
-        private bool CanExecuteStopCommand()
-        {
-            if (CurrentTask is null)
-            {
-                return false;
-            }
-            return _tool.CanStop(CurrentTask);
-        }
-        #endregion
-
-        private string _fileName = string.Empty;
-        public string FileName
-        {
-            get => _fileName;
-            set
-            {
-                if (SetProperty(ref _fileName, value))
-                {
-                    if (string.IsNullOrEmpty(value) && CurrentTask is not null && _tool.CanEdit(CurrentTask))
-                    {
-                        _taskManager.SetState(CurrentTask, TaskState.EDITING);
-                    }
-                }
-            }
-        }
-
-        private string _address = string.Empty;
-        public string Address
-        {
-            get => _address;
-            set
-            {
-                if (SetProperty(ref _address, value))
-                {
-                    if (string.IsNullOrEmpty(value) && CurrentTask is not null && _tool.CanEdit(CurrentTask))
-                    {
-                        _taskManager.SetState(CurrentTask, TaskState.EDITING);
-                    }
-                }
-            }
-        }
 
         private bool _canEidt;
         public bool CanEdit

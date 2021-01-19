@@ -8,41 +8,76 @@ namespace M3U8Downloader.Core.Models
         /// <summary>
         /// It hasn't started yet
         /// </summary>
-        NOT_STARTED = 0,
+        NOT_STARTED,
+
         /// <summary>
         /// It've already started but not is downloading.
         /// </summary>
-        STARTED = 1,
+        STARTED,
+
         /// <summary>
-        /// It suspended and will be skipped the next download in the list of task.
+        /// 
         /// </summary>
-        STOPPED = 2,
+        LOADING,
+
         /// <summary>
         /// It begun downloading but did not finish.
         /// </summary>
-        DOWNLOADING = 3,
+        DOWNLOADING,
+
+        /// <summary>
+        /// 
+        /// </summary>
+        COMPOSING,
+
         /// <summary>
         /// It finished.
         /// </summary>
-        FINISHED = 4,
+        FINISHED,
+
         /// <summary>
         /// There's something wrong with it.
         /// </summary>
-        ERROR = 5,
+        ERROR,
+
         /// <summary>
         /// It's editing so that you can't start it.
         /// </summary>
-        EDITING = 6,
+        EDITING,
     }
+
+    public enum TaskTrigger
+    {
+        START,
+
+        EDIT,
+        END_EDIT,
+
+        PARAMETER_ERROR,
+
+        LOAD,
+        LOAD_ERROR,
+
+        DOWNLOAD,
+        DOWNLOAD_ERROR,
+
+        COMPOSE,
+        COMPOSE_COMPLETED,
+        COMPOSE_ERROR,
+    }
+
     public class M3U8DownloadTask : BindableBase
     {
         private string _uri = string.Empty;
+
         public string Uri
         {
             get => _uri;
             set => SetProperty(ref _uri, value);
         }
+
         private string _fileName = string.Empty;
+
         public string FileName
         {
             get => _fileName;
@@ -50,6 +85,7 @@ namespace M3U8Downloader.Core.Models
         }
 
         private string _targetFolder = string.Empty;
+
         public string TargetFolder
         {
             get => _targetFolder;
@@ -57,13 +93,14 @@ namespace M3U8Downloader.Core.Models
         }
 
         private bool _isDefaultTargetFolder = true;
+
         public bool IsDefaultTargetFolder
         {
             get => _isDefaultTargetFolder;
             set => SetProperty(ref _isDefaultTargetFolder, value);
         }
 
-        private TaskState _state;
+        private TaskState _state = TaskState.NOT_STARTED;
         public TaskState State
         {
             get => _state;
@@ -71,6 +108,7 @@ namespace M3U8Downloader.Core.Models
         }
 
         private int _porgress = 0;
+
         /// <summary>
         /// The max value is 100 and min one is 0.0.
         /// </summary>
@@ -81,6 +119,7 @@ namespace M3U8Downloader.Core.Models
         }
 
         private DateTime _timeStamp;
+
         public DateTime TimeStamp
         {
             get => _timeStamp;

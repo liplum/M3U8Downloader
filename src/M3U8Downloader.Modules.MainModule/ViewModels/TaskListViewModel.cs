@@ -1,19 +1,18 @@
 ﻿using M3U8Downloader.Core;
 using M3U8Downloader.Core.Events;
-using M3U8Downloader.Core.Exceptions.DownloadExceptions;
-using M3U8Downloader.Core.Interfaces;
+using M3U8Downloader.Core.Interfaces.Manager;
+using M3U8Downloader.Core.Interfaces.Tool;
 using M3U8Downloader.Core.Models;
 using M3U8Downloader.Core.MVVM;
 using Prism.Events;
 using Prism.Ioc;
+using Stateless;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace M3U8Downloader.Modules.MainModule.ViewModels
+namespace M3U8Downloader.MainModule.ViewModels
 {
     internal class TaskListViewModel : ViewModelBase
     {
@@ -22,29 +21,45 @@ namespace M3U8Downloader.Modules.MainModule.ViewModels
 
         #region Service
         private readonly IDownloadTaskManageService _taskManager;
-        private readonly IDownloadService _downloadService;
-        private readonly IM3U8DownloadTaskToolService _tool;
-        private readonly IUriService _uriService;
-        private readonly IM3U8FileContentAnalyseService _m3u8FileContentAnalyseService;
-        private readonly IM3U8TaskDatabaseService _databaseService;
-        private readonly IVideoComposeService _composeVideoService;
-        private readonly IVideosMergeService _videosMergeService;
+        private readonly IDownloadTaskToolService _tool;
         #endregion
+
+        private enum DownloadState
+        {
+            START_ALL, NOT_START_ALL
+        }
+
+        private enum DownloadTrigger
+        {
+            START_ALL, STOP_ALL
+        }
+
+        private readonly StateMachine<DownloadState, DownloadTrigger> _stateMachine;
+
+        private DownloadState CurrentState
+        {
+            get => _stateMachine.State;
+        }
 
         public TaskListViewModel(IContainerProvider containerProvider)
         {
+            #region StateMachine Configure
+
+            _stateMachine = new StateMachine<DownloadState, DownloadTrigger>(DownloadState.NOT_START_ALL);
+            _stateMachine.Configure(DownloadState.NOT_START_ALL)
+                .Permit(DownloadTrigger.START_ALL, DownloadState.START_ALL);
+
+            _stateMachine.Configure(DownloadState.START_ALL)
+                .OnEntry(OnEntryStartAll)
+                .Permit(DownloadTrigger.STOP_ALL, DownloadState.NOT_START_ALL);
+
+            #endregion
 
             #region Reslve
             _provider = containerProvider;
             _eventAggregator = _provider.Resolve<IEventAggregator>();
-            _tool = _provider.Resolve<IM3U8DownloadTaskToolService>();
+            _tool = _provider.Resolve<IDownloadTaskToolService>();
             _taskManager = _provider.Resolve<IDownloadTaskManageService>();
-            _downloadService = _provider.Resolve<IDownloadService>();
-            _uriService = _provider.Resolve<IUriService>();
-            _m3u8FileContentAnalyseService = _provider.Resolve<IM3U8FileContentAnalyseService>();
-            _composeVideoService = _provider.Resolve<IVideoComposeService>();
-            _databaseService = _provider.Resolve<IM3U8TaskDatabaseService>();
-            _videosMergeService = _provider.Resolve<IVideosMergeService>();
             #endregion
 
             TaskList = _taskManager.GetTaskList();
@@ -53,19 +68,45 @@ namespace M3U8Downloader.Modules.MainModule.ViewModels
             _eventAggregator.GetEvent<DownloadTaskListNeedAddEvent>().Subscribe(OnDownloadTaskListNeedAdd);
             _eventAggregator.GetEvent<DownloadTaskListNeedRemoveEvent>().Subscribe(OnDownloadTaskListNeedRemove);
             _eventAggregator.GetEvent<WindowSizeChangedEvent>().Subscribe(OnWindowSizeChanged);
-            _eventAggregator.GetEvent<AllDownloadTasksStateNeedChangeEvent>().Subscribe(OnAllDownloadTasksStateNeedChange);
+            _eventAggregator.GetEvent<AllDownloadTasksCommandEvent>().Subscribe(OnAllDownloadTasksCommand);
             _eventAggregator.GetEvent<FinishedDownloadTaskNeedRemoveEvent>().Subscribe(OnFinishedDownloadTaskNeedRemove);
-            _eventAggregator.GetEvent<DownloadTaskStateNeedChangeEvent>().Subscribe(OnDownloadTaskStateNeedChange);
-            _eventAggregator.GetEvent<DownloadTaskErrorEvent>().Subscribe(OnDownloadTaskError);
+            _eventAggregator.GetEvent<DownloadTaskStateChangedEvent>().Subscribe(OnDownloadTaskStateChanged);
+            _eventAggregator.GetEvent<DownloadTaskActionEvent>().Subscribe(OnDownloadTaskNeedStart, (args) => args.ActionType == DownloadTaskActionEventArgs.Action.NEED_START
+            );
+
             #endregion
         }
 
+        #region StateEvent
+
+
+        private void OnEntryStartAll()
+        {
+            StartNextTask();
+        }
+        #endregion
+
         #region Event Hanlders
 
-        private void OnDownloadTaskError(DownloadTaskErrorEventArgs args)
+        private void OnDownloadTaskStateChanged(DownloadTaskStateChangedEventArgs args)
         {
-            var task = args.Task;
-            _taskManager.SetState(task, TaskState.ERROR);
+            switch (args.Type)
+            {
+                case DownloadTaskStateChangedEventArgs.ChangeType.STARTED:
+                    break;
+                case DownloadTaskStateChangedEventArgs.ChangeType.STOPPED:
+                    break;
+                case DownloadTaskStateChangedEventArgs.ChangeType.FINISHED:
+                    {
+                        if (CurrentState == DownloadState.START_ALL)
+                        {
+                            StartNextTask();
+                        }
+                    }
+                    break;
+                default:
+                    break;
+            }
         }
 
         private void OnFinishedDownloadTaskNeedRemove(FinishedDownloadTaskNeedRemoveEventArgs args)
@@ -79,24 +120,25 @@ namespace M3U8Downloader.Modules.MainModule.ViewModels
             }
         }
 
-        private void OnAllDownloadTasksStateNeedChange(AllDownloadTasksStateNeedChangeEventArgs args)
+        private void OnAllDownloadTasksCommand(AllDownloadTasksCommandEventArgs args)
         {
-            switch (args.Mode)
+            switch (args.TaskCommand)
             {
-                case AllDownloadTasksStateNeedChangeEventArgs.NeedChangeMode.NEED_START:
-                    StartAllDownloadTask();
+                case AllDownloadTasksCommandEventArgs.Command.START:
+                    _stateMachine.Fire(DownloadTrigger.START_ALL);
                     break;
-                case AllDownloadTasksStateNeedChangeEventArgs.NeedChangeMode.NEED_STOP:
-                    StopAllDownloadTask();
+                case AllDownloadTasksCommandEventArgs.Command.STOP:
+                    _stateMachine.Fire(DownloadTrigger.STOP_ALL);
                     break;
                 default:
                     break;
             }
         }
-        private void OnDownloadTaskStateNeedChange(DownloadTaskStateNeedChangeEventArgs args)
+        private void OnDownloadTaskNeedStart(DownloadTaskActionEventArgs args)
         {
             var task = args.Task;
-            if (_tool.CanStart(task) || _tool.CanRetry(task))
+            StartTask(task);
+            /*if (_tool.CanStart(task) || _tool.CanRetry(task))
             {
                 if (IsTaskValidOrPublishEvent(task))
                 {
@@ -106,7 +148,7 @@ namespace M3U8Downloader.Modules.MainModule.ViewModels
             if (HasNoTaskDownloading())
             {
                 StartDownloadTask(task);
-            }
+            }*/
         }
 
         private void OnWindowSizeChanged(WindowSizeChangedEventArgs args)
@@ -126,156 +168,151 @@ namespace M3U8Downloader.Modules.MainModule.ViewModels
 
         #endregion
 
-        private void StartAllDownloadTask()
-        {
-            foreach (var task in TaskList)
-            {
-                if (_tool.CanStart(task))
+        /*        private void StartAllDownloadTask()
                 {
-                    if (IsTaskValidOrPublishEvent(task))
+                    //TODO:
+                    *//*foreach (var task in TaskList)
                     {
-                        _taskManager.SetState(task, TaskState.STARTED);
+                        if (_tool.CanStart(task))
+                        {
+                            if (IsTaskValidOrPublishEvent(task))
+                            {
+                                _taskManager.SetState(task, TaskState.STARTED);
+                            }
+                        }
                     }
-                }
-            }
-            if (HasNoTaskDownloading())
-            {
-                var task = GetFirstStartedButNotInDownloadTask();
+                    if (HasNoTaskDownloading())
+                    {
+                        var task = GetFirstStartedButNotInDownloadTask();
 
-                if (task is not null)
-                {
-                    StartDownloadTask(task);
-                }
-            }
-        }
+                        if (task is not null)
+                        {
+                            StartDownloadTask(task);
+                        }
+                    }*//*
+                }*/
 
         /// <summary>
         /// Checks whether every arguments of the task all are valid.
         /// </summary>
         /// <param name="task"></param>
         /// <returns>Whether they all are valid.</returns>
-        private bool IsTaskValidOrPublishEvent(M3U8DownloadTask task)
-        {
-            bool isError = false;
-            if (!_tool.IsUriValid(task))
-            {
-                isError = true;
-                _eventAggregator.GetEvent<DownloadTaskErrorEvent>().Publish(
-                    new DownloadTaskErrorEventArgs(task, DownloadTaskErrorEventArgs.ErrorType.URI)
-                    );
-            }
-            else if (!_tool.IsTargetFolderValid(task))
-            {
-                isError = true;
-                _eventAggregator.GetEvent<DownloadTaskErrorEvent>().Publish(
-                    new DownloadTaskErrorEventArgs(task, DownloadTaskErrorEventArgs.ErrorType.TargetFolder)
-                    );
-            }
+        //private bool IsTaskValidOrPublishEvent(M3U8DownloadTask task)
+        //{
+        //    bool isError = false;
+        //    if (!_tool.IsUriValid(task))
+        //    {
+        //        isError = true;
+        //        _eventAggregator.GetEvent<DownloadTaskErrorEvent>().Publish(
+        //            new DownloadTaskErrorEventArgs(task, DownloadTaskErrorEventArgs.ErrorType.URI)
+        //            );
+        //    }
+        //    else if (!_tool.IsTargetFolderValid(task))
+        //    {
+        //        isError = true;
+        //        _eventAggregator.GetEvent<DownloadTaskErrorEvent>().Publish(
+        //            new DownloadTaskErrorEventArgs(task, DownloadTaskErrorEventArgs.ErrorType.TargetFolder)
+        //            );
+        //    }
 
-            if (isError)
-            {
-                _taskManager.SetState(task, TaskState.ERROR);
-            }
-            return isError;
-        }
+        //    if (isError)
+        //    {
+        //        _taskManager.SetState(task, TaskState.ERROR);
+        //    }
+        //    return isError;
+        //}
 
-        private void StopAllDownloadTask()
-        {
-            foreach (var task in TaskList)
-            {
-                if (_tool.CanStop(task))
-                {
-                    _taskManager.SetState(task, TaskState.STOPPED);
-                }
-            }
-        }
+        /* private void StopAllDownloadTask()
+         {
+             //TODO:
+             *//*            foreach (var task in TaskList)
+                         {
+                             if (_tool.CanStop(task))
+                             {
+                                 _taskManager.SetState(task, TaskState.STOPPED);
+                             }
+                         }*//*
+         }*/
 
-        private void DownloadNextTask()
-        {
-            var next = GetFirstStartedButNotInDownloadTask();
+        #region Discard
 
-            if (next is not null)
-            {
-                StartDownloadTask(next);
-            }
-        }
+        //private void StartDownloadTask(M3U8DownloadTask task)
+        //{
+        //    _eventAggregator.GetEvent<DownloadTaskStartedEvent>().Publish(
+        //        new DownloadTaskStartedEventArgs(task)
+        //    );
+        //    var tokenSource = new CancellationTokenSource();
+        //    var token = tokenSource.Token;
 
+        //    Task.Run(async () =>
+        //    {
+        //        _taskManager.SetState(task, TaskState.DOWNLOADING);
+        //        try
+        //        {
+        //            var content = _uriService.GetM3U8Content(task.Uri);
+        //            AddPer();
 
-        private void StartDownloadTask(M3U8DownloadTask task)
-        {
-            _eventAggregator.GetEvent<DownloadTaskStartedEvent>().Publish(
-                new DownloadTaskStartedEventArgs(task)
-            );
-            var tokenSource = new CancellationTokenSource();
-            var token = tokenSource.Token;
+        //            var spans = _m3u8FileContentAnalyseService.GetEveryDownloadSpan(task, content);
+        //            AddPer();
 
-            Task.Run(async () =>
-            {
-                _taskManager.SetState(task, TaskState.DOWNLOADING);
-                try
-                {
-                    var content = _uriService.GetM3U8Content(task.Uri);
-                    AddPer();
+        //            _databaseService.TryAddSpans(task, spans);
 
-                    var spans = _m3u8FileContentAnalyseService.GetEveryDownloadSpan(task, content);
-                    AddPer();
+        //            _downloadService.DownloadDataFrom(spans, SpanDownloadExceptionHandler);
+        //            AddPer();
 
-                    _databaseService.TryAddSpans(task, spans);
+        //            List<string> filesList = null;
 
-                    _downloadService.DownloadDataFrom(spans, SpanDownloadExceptionHandler);
-                    AddPer();
+        //            filesList = _composeVideoService.ComposeVideo(task);
+        //            AddPer();
 
-                    List<string> filesList = null;
+        //            token.ThrowIfCancellationRequested();
 
-                    filesList = _composeVideoService.ComposeVideo(task);
-                    AddPer();
+        //            _databaseService.TryRemoveSpans(task);
 
-                    token.ThrowIfCancellationRequested();
+        //            OnWaitMerge();
+        //            var successful = await Task.Run(() =>
+        //            {
+        //                return _videosMergeService.MergeVideo(filesList, _tool.GetOutputFileFullName(task));
+        //            });
+        //            AddPer();
 
-                    _databaseService.TryRemoveSpans(task);
+        //            _taskManager.SetState(task, successful ? TaskState.FINISHED : TaskState.ERROR);
+        //        }
+        //        catch
+        //        {
+        //            OnError();
+        //        }
 
-                    OnWaitMerge();
-                    var successful = await Task.Run(() =>
-                    {
-                        return _videosMergeService.MergeVideo(filesList, _tool.GetOutputFileFullName(task));
-                    });
-                    AddPer();
+        //        void AddPer()
+        //        {
+        //            const int PER = 100 / 5;
+        //            task.Progress += PER;
+        //        }
 
-                    _taskManager.SetState(task, successful ? TaskState.FINISHED : TaskState.ERROR);
-                }
-                catch
-                {
-                    OnError();
-                }
+        //    }, token);
 
-                void AddPer()
-                {
-                    const int PER = 100 / 5;
-                    task.Progress += PER;
-                }
+        //    void OnError()
+        //    {
+        //        tokenSource.Cancel();
+        //        _taskManager.SetState(task, TaskState.ERROR);
+        //    }
 
-            }, token);
+        //    void OnWaitMerge()
+        //    {
+        //        DownloadNextTask();
+        //    }
 
-            void OnError()
-            {
-                tokenSource.Cancel();
-                _taskManager.SetState(task, TaskState.ERROR);
-            }
+        //    void SpanDownloadExceptionHandler(M3U8DownloadSpan span, SpanDownloadException e)
+        //    {
+        //        Console.WriteLine(e.ToString());
+        //    }
 
-            void OnWaitMerge()
-            {
-                DownloadNextTask();
-            }
+        //    void OnDownloadTaskAlreadyStartedException()
+        //    {
+        //    }
+        //}
 
-            void SpanDownloadExceptionHandler(M3U8DownloadSpan span, SpanDownloadException e)
-            {
-                Console.WriteLine(e.ToString());
-            }
-
-            void OnDownloadTaskAlreadyStartedException()
-            {
-            }
-        }
+        #endregion
 
         #region Add&Remove
 
@@ -327,13 +364,6 @@ namespace M3U8Downloader.Modules.MainModule.ViewModels
             var addedSuccessfully = false;
             if (count == 1)
             {
-                if (SelectedTask is not null)
-                {
-                    //Notify saving the download task being edited currently.
-                    _eventAggregator.GetEvent<CurrentlyEditedDownloadTaskNeedBeSavedEvent>().Publish(
-                       new CurrentlyEditedDownloadTaskNeedBeSavedEventArgs()
-                       );
-                }
                 if (SelectedTask is null || !_tool.HasEmpty(TaskList))
                 {
                     var newTask = _taskManager.AddNewTask();
@@ -350,14 +380,6 @@ namespace M3U8Downloader.Modules.MainModule.ViewModels
             }
             else if (count > 1)
             {
-                if (SelectedTask is not null)
-                {
-                    //Notify saving the download task being edited currently.
-                    _eventAggregator.GetEvent<CurrentlyEditedDownloadTaskNeedBeSavedEvent>().Publish(
-                       new CurrentlyEditedDownloadTaskNeedBeSavedEventArgs()
-                       );
-                }
-
                 var added = new List<M3U8DownloadTask>(count);
                 for (var i = 0; i < count; i++)
                 {
@@ -382,16 +404,19 @@ namespace M3U8Downloader.Modules.MainModule.ViewModels
 
         #endregion
 
-        private bool HasNoTaskDownloading()
+        private void StartNextTask()
         {
-            foreach (var task in TaskList)
+            var task = GetFirstStartedButNotInDownloadTask();
+
+            if (task is not null)
             {
-                if (task.State == TaskState.DOWNLOADING)
-                {
-                    return false;
-                }
+                StartTask(task);
             }
-            return true;
+        }
+
+        private void StartTask(M3U8DownloadTask task)
+        {
+            _taskManager.StartDownload(task);
         }
 
         private M3U8DownloadTask GetFirstStartedButNotInDownloadTask()
@@ -421,9 +446,6 @@ namespace M3U8Downloader.Modules.MainModule.ViewModels
             {
                 if (SetProperty(ref _selectedTask, value) && value is not null)
                 {
-                    _eventAggregator.GetEvent<CurrentlyEditedDownloadTaskNeedBeSavedEvent>().Publish(
-                        new CurrentlyEditedDownloadTaskNeedBeSavedEventArgs()
-                        );
                     _eventAggregator.GetEvent<DownloadTaskSelectedEvent>().Publish(
                         new DownloadTaskSelectedEventArgs(value)
                         );

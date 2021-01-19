@@ -135,9 +135,6 @@
   <data name="DetailPage_Start_Button" xml:space="preserve">
     <value>@DetailPage_Start_Button</value>
   </data>
-  <data name="DetailPage_Stop_Button" xml:space="preserve">
-    <value>@DetailPage_Stop_Button</value>
-  </data>
   <data name="DetailPage_Target_Button" xml:space="preserve">
     <value>@DetailPage_Target_Button</value>
   </data>

@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <AppendTargetFrameworkToOutputPath>Flase</AppendTargetFrameworkToOutputPath>
+    <Authors>Liplum</Authors>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>..\Build\Debug\Modules</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutputPath>..\Build\Release\Modules</OutputPath>
+    <DebugType>none</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\M3U8Downloader.Core.Exceptions\M3U8Downloader.Core.Exceptions.csproj" />
+    <ProjectReference Include="..\M3U8Downloader.Core.Interfaces\M3U8Downloader.Core.Interfaces.csproj" />
+    <ProjectReference Include="..\M3U8Downloader.Core.Models\M3U8Downloader.Core.Models.csproj" />
+    <ProjectReference Include="..\M3U8Downloader.Core\M3U8Downloader.Core.csproj" />
+  </ItemGroup>
+
+</Project>

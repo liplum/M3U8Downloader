@@ -135,9 +135,6 @@
   <data name="DetailPage_Start_Button" xml:space="preserve">
     <value>开始</value>
   </data>
-  <data name="DetailPage_Stop_Button" xml:space="preserve">
-    <value>停止</value>
-  </data>
   <data name="DetailPage_Target_Button" xml:space="preserve">
     <value>目标目录</value>
   </data>

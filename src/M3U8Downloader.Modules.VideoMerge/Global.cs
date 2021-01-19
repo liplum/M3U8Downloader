@@ -1,4 +1,4 @@
-﻿namespace M3U8Downloader.Modules.VideoMerge
+﻿namespace M3U8Downloader.VideoMerge
 {
     public static class Global
     {

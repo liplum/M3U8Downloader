@@ -10,11 +10,11 @@ namespace M3U8Downloader.Core.Events
 
     public class DownloadTaskStateChangedEventArgs
     {
-        public DownloadTaskStateChangedEventArgs(ChangeMode changeMode)
+        public DownloadTaskStateChangedEventArgs(ChangeType changeType)
         {
-            Mode = changeMode;
+            Type = changeType;
         }
-        public enum ChangeMode
+        public enum ChangeType
         {
             STARTED, STOPPED, FINISHED
         }
@@ -27,7 +27,7 @@ namespace M3U8Downloader.Core.Events
         {
             get; init;
         }
-        public ChangeMode Mode
+        public ChangeType Type
         {
             get; init;
         }

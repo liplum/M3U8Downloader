@@ -12,6 +12,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Prism.Core" Version="8.0.0.1909" />
+    <PackageReference Include="Stateless" Version="5.1.8" />
   </ItemGroup>
   
 </Project>

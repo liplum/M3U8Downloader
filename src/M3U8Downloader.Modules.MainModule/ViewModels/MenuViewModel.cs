@@ -4,7 +4,7 @@ using Prism.Commands;
 using Prism.Events;
 using Prism.Ioc;
 
-namespace M3U8Downloader.Modules.MainModule.ViewModels
+namespace M3U8Downloader.MainModule.ViewModels
 {
     internal class MenuViewModel : ViewModelBase
     {
@@ -56,9 +56,9 @@ namespace M3U8Downloader.Modules.MainModule.ViewModels
 
         private void ExecuteStartAllTask()
         {
-            _eventAggregator.GetEvent<AllDownloadTasksStateNeedChangeEvent>().Publish(
-                new AllDownloadTasksStateNeedChangeEventArgs(
-                    AllDownloadTasksStateNeedChangeEventArgs.NeedChangeMode.NEED_START)
+            _eventAggregator.GetEvent<AllDownloadTasksCommandEvent>().Publish(
+                new AllDownloadTasksCommandEventArgs(
+                    AllDownloadTasksCommandEventArgs.Command.START)
                 );
         }
 
@@ -75,9 +75,9 @@ namespace M3U8Downloader.Modules.MainModule.ViewModels
 
         private void ExecuteStop()
         {
-            _eventAggregator.GetEvent<AllDownloadTasksStateNeedChangeEvent>().Publish(
-                new AllDownloadTasksStateNeedChangeEventArgs(
-                    AllDownloadTasksStateNeedChangeEventArgs.NeedChangeMode.NEED_STOP)
+            _eventAggregator.GetEvent<AllDownloadTasksCommandEvent>().Publish(
+                new AllDownloadTasksCommandEventArgs(
+                    AllDownloadTasksCommandEventArgs.Command.STOP)
                 );
         }
 

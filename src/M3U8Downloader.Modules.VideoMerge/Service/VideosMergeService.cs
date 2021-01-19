@@ -1,12 +1,12 @@
-﻿using M3U8Downloader.Core.Interfaces;
+﻿using M3U8Downloader.Core.Interfaces.IO;
 using Prism.Ioc;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using static M3U8Downloader.Modules.VideoMerge.Global;
+using static M3U8Downloader.VideoMerge.Global;
 
 
-namespace M3U8Downloader.Modules.VideoMerge.Service
+namespace M3U8Downloader.VideoMerge.Service
 {
     public class VideosMergeService : IVideosMergeService
     {

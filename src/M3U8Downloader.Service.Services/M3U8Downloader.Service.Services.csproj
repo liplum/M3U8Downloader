@@ -17,10 +17,12 @@
     <DebugSymbols>false</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Stateless" Version="5.1.8" />
     <PackageReference Include="WPFLocalizeExtension" Version="3.8.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\M3U8Downloader.Core.Events\M3U8Downloader.Core.Events.csproj" />
     <ProjectReference Include="..\M3U8Downloader.Core.Exceptions\M3U8Downloader.Core.Exceptions.csproj" />
     <ProjectReference Include="..\M3U8Downloader.Core.infrastructures\M3U8Downloader.Core.infrastructures.csproj" />
     <ProjectReference Include="..\M3U8Downloader.Core.Interfaces\M3U8Downloader.Core.Interfaces.csproj" />

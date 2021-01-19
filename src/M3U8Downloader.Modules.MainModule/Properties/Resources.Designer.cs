@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace M3U8Downloader.Modules.MainModule.Properties {
+namespace M3U8Downloader.MainModule.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace M3U8Downloader.Modules.MainModule.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("M3U8Downloader.Modules.MainModule.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("M3U8Downloader.MainModule.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -120,15 +120,6 @@ namespace M3U8Downloader.Modules.MainModule.Properties {
         internal static string DetailPage_Start_Button {
             get {
                 return ResourceManager.GetString("DetailPage_Start_Button", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 @DetailPage_Stop_Button 的本地化字符串。
-        /// </summary>
-        internal static string DetailPage_Stop_Button {
-            get {
-                return ResourceManager.GetString("DetailPage_Stop_Button", resourceCulture);
             }
         }
         

@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace M3U8Downloader.Modules.MainModule.Views
+namespace M3U8Downloader.MainModule.Views
 {
     /// <summary>
     /// Interaction logic for ViewA.xaml

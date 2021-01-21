@@ -1,4 +1,5 @@
 ﻿using M3U8Downloader.Core;
+using M3U8Downloader.Core.Adapter;
 using M3U8Downloader.Core.infrastructures;
 using M3U8Downloader.Core.Interfaces.Cache;
 using M3U8Downloader.Core.Interfaces.Global;
@@ -13,6 +14,7 @@ using M3U8Downloader.Service.Services.Manager;
 using M3U8Downloader.Service.Services.Net;
 using M3U8Downloader.Service.Services.Tool;
 using M3U8Downloader.Shell.Views;
+using MahApps.Metro.Controls;
 using Prism.Events;
 using Prism.Ioc;
 using Prism.Modularity;
@@ -40,7 +42,8 @@ namespace M3U8Downloader.Shell
         {
             base.InitializeShell(shell);
             var regionManager = Container.Resolve<IRegionManager>();
-            regionManager.RegisterViewWithRegion(RegionNames.Settings_Region, typeof(Settings));
+            regionManager.RequestNavigate(RegionNames.Settings_Region, "Settings");
+            //regionManager.RegisterViewWithRegion(RegionNames.Settings_Region, typeof(Settings));
         }
         //2
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
@@ -67,12 +70,16 @@ namespace M3U8Downloader.Shell
 
             containerRegistry.RegisterSingleton<ILocalizeHelperService, LocalizeHelperService>();
 
+            containerRegistry.RegisterSingleton<IApplicationCommand, ApplicationCommand>();
+
             containerRegistry.Register<IIOService, IOService>();
 
             containerRegistry.RegisterInstance(new HttpClient());
 
+            containerRegistry.RegisterForNavigation<Settings>();
 
         }
+
         //1
         protected override IModuleCatalog CreateModuleCatalog()
         {
@@ -89,6 +96,12 @@ namespace M3U8Downloader.Shell
             base.OnInitialized();
             //TODO:Read history to IDownloadTaskManageService from the file.
             LocalizeDictionary.Instance.Culture = Thread.CurrentThread.CurrentCulture;
+        }
+
+        protected override void ConfigureRegionAdapterMappings(RegionAdapterMappings regionAdapterMappings)
+        {
+            base.ConfigureRegionAdapterMappings(regionAdapterMappings);
+            regionAdapterMappings.RegisterMapping<FlyoutsControl, FlyoutsControlAdapter>();
         }
     }
 }

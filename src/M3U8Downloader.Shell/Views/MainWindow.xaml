@@ -25,9 +25,13 @@
     </i:Interaction.Triggers>
 
     <metro:MetroWindow.Flyouts>
-        <metro:FlyoutsControl prism:RegionManager.RegionName="{x:Static core:RegionNames.Settings_Region}" />
+        <metro:FlyoutsControl prism:RegionManager.RegionName="{x:Static core:RegionNames.Settings_Region}">
+            <Style TargetType="{x:Type metro:Flyout}">
+                <Setter Property="IsOpen" Value="{Binding IsOpen}" />
+            </Style>
+        </metro:FlyoutsControl>
     </metro:MetroWindow.Flyouts>
-    
+
     <Grid x:Name="MainWindowContent">
         <StackPanel HorizontalAlignment="Stretch">
 

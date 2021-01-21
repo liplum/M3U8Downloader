@@ -30,7 +30,7 @@
             Content="Remove"
             Style="{DynamicResource MahApps.Styles.Button.Circle}" />
         <Button
-            Command="{Binding OpenSettingCommand}"
+            Command="{Binding AppCommand.OpenSettingsCommand}"
             Content="Setting"
             Style="{DynamicResource MahApps.Styles.Button.Circle}" />
     </StackPanel>

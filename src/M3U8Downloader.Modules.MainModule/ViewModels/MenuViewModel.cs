@@ -1,4 +1,5 @@
 ﻿using M3U8Downloader.Core.Events;
+using M3U8Downloader.Core.Interfaces.Global;
 using M3U8Downloader.Core.MVVM;
 using Prism.Commands;
 using Prism.Events;
@@ -11,10 +12,14 @@ namespace M3U8Downloader.MainModule.ViewModels
         private readonly IEventAggregator _eventAggregator;
         private readonly IContainerProvider _provider;
 
+
         public MenuViewModel(IContainerProvider containerProvider)
         {
             _provider = containerProvider;
             _eventAggregator = _provider.Resolve<IEventAggregator>();
+
+            AppCommand = _provider.Resolve<IApplicationCommand>();
+
             _eventAggregator.GetEvent<DownloadTaskListCountChangedEvent>().Subscribe(OnDownloadTaskListCountChanged);
             _eventAggregator.GetEvent<DownloadTaskStateChangedEvent>().Subscribe(OnDownloadTaskStateChanged);
         }
@@ -26,6 +31,19 @@ namespace M3U8Downloader.MainModule.ViewModels
         private void OnDownloadTaskStateChanged(DownloadTaskStateChangedEventArgs args)
         {
             //coming soon...
+        }
+
+        private IApplicationCommand _appCmd;
+        public IApplicationCommand AppCommand
+        {
+            get
+            {
+                return _appCmd;
+            }
+            set
+            {
+                SetProperty(ref _appCmd, value);
+            }
         }
 
         private bool _canStart = false;
@@ -116,22 +134,6 @@ namespace M3U8Downloader.MainModule.ViewModels
         private bool CanExecuteRemoveCurrentTask()
         {
             return CanRemove;
-        }
-        #endregion
-
-        #region DelegateCommand OpenSettingCommand
-        private DelegateCommand _openSettingCommand;
-        public DelegateCommand OpenSettingCommand =>
-            _openSettingCommand ??= new DelegateCommand(ExecuteSetting, CanExecuteSetting);
-
-        private void ExecuteSetting()
-        {
-
-        }
-
-        private bool CanExecuteSetting()
-        {
-            return true;
         }
         #endregion
     }

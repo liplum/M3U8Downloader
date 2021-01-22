@@ -26,9 +26,13 @@
 
     <metro:MetroWindow.Flyouts>
         <metro:FlyoutsControl prism:RegionManager.RegionName="{x:Static core:RegionNames.Settings_Region}">
-            <Style TargetType="{x:Type metro:Flyout}">
-                <Setter Property="IsOpen" Value="{Binding IsOpen}" />
-            </Style>
+            <metro:FlyoutsControl.ItemContainerStyle>
+                <Style TargetType="{x:Type metro:Flyout}">
+                    <Setter Property="IsOpen" Value="{Binding IsOpen}" />
+                    <Setter Property="Position" Value="Right" />
+                    <Setter Property="Header" Value="Test" />
+                </Style>
+            </metro:FlyoutsControl.ItemContainerStyle>
         </metro:FlyoutsControl>
     </metro:MetroWindow.Flyouts>
 

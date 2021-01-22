@@ -18,12 +18,12 @@ namespace M3U8Downloader.Core.Adapter
             {
                 if (e.Action == NotifyCollectionChangedAction.Add)
                 {
-                    foreach (FrameworkElement element in e.NewItems)
+                    foreach (FrameworkElement elemt in e.NewItems)
                     {
                         regionTarget.Items.Add(new Flyout
                         {
-                            Content = element,
-                            DataContext = element.DataContext
+                            Content = elemt,
+                            DataContext = elemt.DataContext
                         });
                     }
                 }

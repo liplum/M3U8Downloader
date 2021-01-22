@@ -33,7 +33,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "M3U8Downloader.VideoMerge",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "M3U8Downloader.Download", "M3U8Downloader.DownloadModule\M3U8Downloader.Download.csproj", "{75C10E8B-6DDB-4D86-BD8C-E620DDBDF9A4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "M3U8Downloader.FileContentAnalysis", "M3U8Downloader.FileContentAnalysis\M3U8Downloader.FileContentAnalysis.csproj", "{8BC0CEF5-76B7-48FB-99B0-B7818311745D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "M3U8Downloader.FileContentAnalysis", "M3U8Downloader.FileContentAnalysis\M3U8Downloader.FileContentAnalysis.csproj", "{8BC0CEF5-76B7-48FB-99B0-B7818311745D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "M3U8Downloader.Styles", "M3U8Downloader.Styles\M3U8Downloader.Styles.csproj", "{B73CA3AD-4A99-47D2-9858-F8B251D1E699}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -89,6 +91,10 @@ Global
 		{8BC0CEF5-76B7-48FB-99B0-B7818311745D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8BC0CEF5-76B7-48FB-99B0-B7818311745D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8BC0CEF5-76B7-48FB-99B0-B7818311745D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B73CA3AD-4A99-47D2-9858-F8B251D1E699}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B73CA3AD-4A99-47D2-9858-F8B251D1E699}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B73CA3AD-4A99-47D2-9858-F8B251D1E699}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B73CA3AD-4A99-47D2-9858-F8B251D1E699}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -106,6 +112,7 @@ Global
 		{EB04EF3E-746B-4CBC-BF76-15C8F3C7CEAE} = {CC711533-CE50-49AC-9F84-6361393E2099}
 		{75C10E8B-6DDB-4D86-BD8C-E620DDBDF9A4} = {CC711533-CE50-49AC-9F84-6361393E2099}
 		{8BC0CEF5-76B7-48FB-99B0-B7818311745D} = {CC711533-CE50-49AC-9F84-6361393E2099}
+		{B73CA3AD-4A99-47D2-9858-F8B251D1E699} = {3843EAD5-F9BC-40C3-BD1B-32D06CE51F69}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F398EE9D-AB00-4014-B8A9-1858DE16A1B4}

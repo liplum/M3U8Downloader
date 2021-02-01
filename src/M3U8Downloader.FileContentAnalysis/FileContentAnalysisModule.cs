@@ -1,6 +1,6 @@
 ﻿using M3U8Downloader.Core.Interfaces.Analysis;
 using M3U8Downloader.Core.MVVM;
-using M3U8Downloader.FileContentAnalysis.Service;
+using M3U8Downloader.FileContentAnalysis.Services;
 using Prism.Ioc;
 using Prism.Modularity;
 using Unity;

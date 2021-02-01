@@ -1,0 +1,18 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="M3U8Downloader.Properties" GeneratedClassName="Config">
+  <Profiles />
+  <Settings>
+    <Setting Name="DefaultTargetDirectory" Type="System.String" Scope="User">
+      <Value Profile="(Default)">\Download</Value>
+    </Setting>
+    <Setting Name="DefaultVideoFormat" Type="System.String" Scope="User">
+      <Value Profile="(Default)">.mp4</Value>
+    </Setting>
+    <Setting Name="CacheSpanDirectory" Type="System.String" Scope="User">
+      <Value Profile="(Default)">\Cache</Value>
+    </Setting>
+    <Setting Name="MaxParallelCount" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">5</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

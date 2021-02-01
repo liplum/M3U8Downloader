@@ -4,7 +4,7 @@ using Prism.Events;
 using Prism.Mvvm;
 using System.Windows;
 
-namespace M3U8Downloader.Shell.ViewModels
+namespace M3U8Downloader.ViewModels
 {
     public class MainWindowViewModel : BindableBase
     {

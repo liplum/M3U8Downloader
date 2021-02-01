@@ -4,7 +4,7 @@
     <TargetFramework>net5.0-windows</TargetFramework>
     <AppendTargetFrameworkToOutputPath>Flase</AppendTargetFrameworkToOutputPath>
     <UseWPF>true</UseWPF>
-    <AssemblyName>M3U8Downloader.Shell</AssemblyName>
+    <AssemblyName>M3U8Downloader</AssemblyName>
     <Authors>Liplum</Authors>
     <Company>Liplum</Company>
     <Product>M3U8Downloader</Product>
@@ -27,6 +27,19 @@
     <ProjectReference Include="..\M3U8Downloader.Core.Events\M3U8Downloader.Core.Events.csproj" />
     <ProjectReference Include="..\M3U8Downloader.Core\M3U8Downloader.Core.csproj" />
     <ProjectReference Include="..\M3U8Downloader.Modules.MainModule\M3U8Downloader.MainModule.csproj" />
-    <ProjectReference Include="..\M3U8Downloader.Service.Services\M3U8Downloader.Service.Services.csproj" />
+    <ProjectReference Include="..\M3U8Downloader.Service.Services\M3U8Downloader.Services.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Properties\Config.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Config.settings</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Properties\Config.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Config.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
 </Project>

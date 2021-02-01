@@ -50,8 +50,23 @@ namespace M3U8Downloader.MainModule.ViewModels
             _locHelper = _provider.Resolve<ILocalizeHelperService>();
 
             _eventAggregator.GetEvent<DownloadTaskSelectedEvent>().Subscribe(OnDownloadTaskSelected);
+            _eventAggregator.GetEvent<DownloadTaskActionEvent>().Subscribe(OnDownloadTaskActed);
+            _eventAggregator.GetEvent<DownloadTaskListCountChangedEvent>().Subscribe(OnDownloadTaskListCountChanged);
 
             LocalizeDictionary.Instance.PropertyChanged += OnLanguageChanged;
+        }
+
+        private void OnDownloadTaskListCountChanged(DownloadTaskListCountChangedEventArgs args)
+        {
+            if (args.Type == DownloadTaskListCountChangedEventArgs.ChangedType.REMOVED && args.ChangedTask.Equals(CurrentTask))
+            {
+                CurrentTask = null;
+            }
+        }
+
+        private void OnDownloadTaskActed(DownloadTaskActionEventArgs obj)
+        {
+            throw new System.NotImplementedException();
         }
 
         private void OnCurrentTaskChanged(object sender, PropertyChangedEventArgs e)

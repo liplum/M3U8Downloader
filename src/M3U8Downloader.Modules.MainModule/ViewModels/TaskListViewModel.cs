@@ -1,5 +1,6 @@
 ﻿using M3U8Downloader.Core;
 using M3U8Downloader.Core.Events;
+using M3U8Downloader.Core.Interfaces.Global;
 using M3U8Downloader.Core.Interfaces.Manager;
 using M3U8Downloader.Core.Interfaces.Tool;
 using M3U8Downloader.Core.Models;
@@ -22,6 +23,7 @@ namespace M3U8Downloader.MainModule.ViewModels
         #region Service
         private readonly IDownloadTaskManageService _taskManager;
         private readonly IDownloadTaskToolService _tool;
+        private readonly IConfiguration _config;
         #endregion
 
         private enum DownloadState
@@ -60,6 +62,7 @@ namespace M3U8Downloader.MainModule.ViewModels
             _eventAggregator = _provider.Resolve<IEventAggregator>();
             _tool = _provider.Resolve<IDownloadTaskToolService>();
             _taskManager = _provider.Resolve<IDownloadTaskManageService>();
+            _config = _provider.Resolve<IConfiguration>();
             #endregion
 
             TaskList = _taskManager.GetTaskList();
@@ -69,7 +72,6 @@ namespace M3U8Downloader.MainModule.ViewModels
             _eventAggregator.GetEvent<DownloadTaskListNeedRemoveEvent>().Subscribe(OnDownloadTaskListNeedRemove);
             _eventAggregator.GetEvent<WindowSizeChangedEvent>().Subscribe(OnWindowSizeChanged);
             _eventAggregator.GetEvent<AllDownloadTasksCommandEvent>().Subscribe(OnAllDownloadTasksCommand);
-            _eventAggregator.GetEvent<FinishedDownloadTaskNeedRemoveEvent>().Subscribe(OnFinishedDownloadTaskNeedRemove);
             _eventAggregator.GetEvent<DownloadTaskStateChangedEvent>().Subscribe(OnDownloadTaskStateChanged);
             _eventAggregator.GetEvent<DownloadTaskActionEvent>().Subscribe(OnDownloadTaskNeedStart, (args) => args.ActionType == DownloadTaskActionEventArgs.Action.NEED_START
             );
@@ -109,11 +111,9 @@ namespace M3U8Downloader.MainModule.ViewModels
             }
         }
 
-        private void OnFinishedDownloadTaskNeedRemove(FinishedDownloadTaskNeedRemoveEventArgs args)
+        private void RemoveFinishedTask()
         {
-            var allFinished = (
-                from task in TaskList where task.State == TaskState.FINISHED select task
-                ).ToList();
+            var allFinished = from task in TaskList where task.State == TaskState.FINISHED select task;
             foreach (var finished in allFinished)
             {
                 RemoveTask(TaskList.IndexOf(finished));
@@ -129,6 +129,9 @@ namespace M3U8Downloader.MainModule.ViewModels
                     break;
                 case AllDownloadTasksCommandEventArgs.Command.STOP:
                     _stateMachine.Fire(DownloadTrigger.STOP_ALL);
+                    break;
+                case AllDownloadTasksCommandEventArgs.Command.REMOVE_FINISHED:
+                    RemoveFinishedTask();
                     break;
                 default:
                     break;
@@ -343,7 +346,7 @@ namespace M3U8Downloader.MainModule.ViewModels
                 _eventAggregator.GetEvent<DownloadTaskListCountChangedEvent>().Publish(
                     new DownloadTaskListCountChangedEventArgs(TaskList.Count)
                     {
-                        Mode = DownloadTaskListCountChangedEventArgs.ChangedMode.REMOVED,
+                        Type = DownloadTaskListCountChangedEventArgs.ChangedType.REMOVED,
                         IsChangedCountSingular = true,
                         ChangedTask = needRemove
                     });
@@ -372,7 +375,7 @@ namespace M3U8Downloader.MainModule.ViewModels
                     _eventAggregator.GetEvent<DownloadTaskListCountChangedEvent>().Publish(
                     new DownloadTaskListCountChangedEventArgs(TaskList.Count)
                     {
-                        Mode = DownloadTaskListCountChangedEventArgs.ChangedMode.ADDED,
+                        Type = DownloadTaskListCountChangedEventArgs.ChangedType.ADDED,
                         IsChangedCountSingular = true,
                         ChangedTask = newTask
                     });
@@ -390,7 +393,7 @@ namespace M3U8Downloader.MainModule.ViewModels
                 _eventAggregator.GetEvent<DownloadTaskListCountChangedEvent>().Publish(
                     new DownloadTaskListCountChangedEventArgs(TaskList.Count)
                     {
-                        Mode = DownloadTaskListCountChangedEventArgs.ChangedMode.ADDED,
+                        Type = DownloadTaskListCountChangedEventArgs.ChangedType.ADDED,
                         IsChangedCountSingular = false,
                         ChangedTasks = added
                     });

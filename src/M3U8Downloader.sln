@@ -17,9 +17,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "M3U8Downloader.Core.Interfa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "M3U8Downloader.Core.Models", "M3U8Downloader.Core.Models\M3U8Downloader.Core.Models.csproj", "{E69644E7-4603-4096-865F-B0027A940B04}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "M3U8Downloader.Service.Services", "M3U8Downloader.Service.Services\M3U8Downloader.Service.Services.csproj", "{B0066226-0AAC-466F-BA98-2BA59686BA28}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "M3U8Downloader.Services", "M3U8Downloader.Service.Services\M3U8Downloader.Services.csproj", "{B0066226-0AAC-466F-BA98-2BA59686BA28}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "M3U8Downloader.Shell", "M3U8Downloader.Shell\M3U8Downloader.Shell.csproj", "{BF2590DE-42E3-4EDD-8654-30906A3049CC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "M3U8Downloader", "M3U8Downloader.Shell\M3U8Downloader.csproj", "{BF2590DE-42E3-4EDD-8654-30906A3049CC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "M3U8Downloader.Core.infrastructures", "M3U8Downloader.Core.infrastructures\M3U8Downloader.Core.infrastructures.csproj", "{E1649F9C-F0A5-463C-AFD7-F860CE4F15D4}"
 EndProject
@@ -35,7 +35,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "M3U8Downloader.Download", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "M3U8Downloader.FileContentAnalysis", "M3U8Downloader.FileContentAnalysis\M3U8Downloader.FileContentAnalysis.csproj", "{8BC0CEF5-76B7-48FB-99B0-B7818311745D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "M3U8Downloader.Styles", "M3U8Downloader.Styles\M3U8Downloader.Styles.csproj", "{B73CA3AD-4A99-47D2-9858-F8B251D1E699}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "M3U8Downloader.Styles", "M3U8Downloader.Styles\M3U8Downloader.Styles.csproj", "{B73CA3AD-4A99-47D2-9858-F8B251D1E699}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

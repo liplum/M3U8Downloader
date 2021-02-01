@@ -3,7 +3,7 @@ using M3U8Downloader.Core.Models;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 
-namespace M3U8Downloader.Service.Services.Cache
+namespace M3U8Downloader.Services.Cache
 {
     public class M3U8TaskCacheService : IM3U8TaskCacheService
     {

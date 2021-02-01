@@ -27,7 +27,7 @@ namespace M3U8Downloader.Service.Services.IO
 
         public List<string> ComposeVideo(M3U8DownloadTask task)
         {
-            var targetFolder = new DirectoryInfo($@"{(_taskComparer.IsDefaultTargetFolder(task) ? _configuration.DefaultTargetFolderPath : task.TargetFolder)}");
+            var targetFolder = new DirectoryInfo($@"{(_taskComparer.IsDefaultTargetFolder(task) ? _configuration.DefaultTargetDirectory : task.TargetFolder)}");
             //var cacheFolder = new DirectoryInfo($@"{_configuration.DefaultCacheSpansFilePath}\{task.FileName}");
 
             //Test

@@ -1,6 +1,4 @@
-﻿using M3U8Downloader.Core.Models;
-using Prism.Events;
-using System.Collections.Generic;
+﻿using Prism.Events;
 
 namespace M3U8Downloader.Core.Events
 {
@@ -16,11 +14,6 @@ namespace M3U8Downloader.Core.Events
         public DownloadTaskListNeedAddEventArgs()
         {
 
-        }
-
-        public IEnumerable<M3U8DownloadTask> NeedAdded
-        {
-            get; init;
         }
 
         /// <summary>

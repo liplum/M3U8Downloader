@@ -16,7 +16,7 @@ namespace M3U8Downloader.Core.Events
 
     public class DownloadTaskListCountChangedEventArgs
     {
-        public enum ChangedMode
+        public enum ChangedType
         {
             REMOVED, ADDED,
             /// <summary>
@@ -50,9 +50,9 @@ namespace M3U8Downloader.Core.Events
             get; init;
         }
 
-        public ChangedMode Mode
+        public ChangedType Type
         {
             get; init;
-        } = ChangedMode.UNDEFINED;
+        } = ChangedType.UNDEFINED;
     }
 }

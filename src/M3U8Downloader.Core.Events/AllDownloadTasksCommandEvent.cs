@@ -14,7 +14,7 @@ namespace M3U8Downloader.Core.Events
         }
         public enum Command
         {
-            START, STOP
+            START, STOP, REMOVE_FINISHED
         }
 
         public Command TaskCommand

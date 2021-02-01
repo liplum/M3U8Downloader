@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace M3U8Downloader.Download.Service
+namespace M3U8Downloader.Download.Services
 {
     public class HttpDownloadService : IDownloadService
     {

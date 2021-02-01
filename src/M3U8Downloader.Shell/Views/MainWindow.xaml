@@ -1,5 +1,5 @@
 ﻿<metro:MetroWindow
-    x:Class="M3U8Downloader.Shell.Views.MainWindow"
+    x:Class="M3U8Downloader.Views.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:calc="clr-namespace:CalcBinding;assembly=CalcBinding"

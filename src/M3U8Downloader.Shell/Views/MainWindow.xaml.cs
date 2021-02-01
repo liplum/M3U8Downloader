@@ -1,7 +1,6 @@
 ﻿using MahApps.Metro.Controls;
-using Prism.Regions;
 
-namespace M3U8Downloader.Shell.Views
+namespace M3U8Downloader.Views
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

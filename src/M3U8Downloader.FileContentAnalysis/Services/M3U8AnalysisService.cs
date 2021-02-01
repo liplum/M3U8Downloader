@@ -4,7 +4,7 @@ using M3U8Downloader.Core.Models;
 using System;
 using System.Collections.Generic;
 
-namespace M3U8Downloader.FileContentAnalysis.Service
+namespace M3U8Downloader.FileContentAnalysis.Services
 {
     public class M3U8AnalysisService : IM3U8FileContentAnalysisService
     {

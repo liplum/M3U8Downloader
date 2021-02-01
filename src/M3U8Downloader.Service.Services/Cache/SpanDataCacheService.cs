@@ -3,7 +3,7 @@ using M3U8Downloader.Core.Models;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
 
-namespace M3U8Downloader.Service.Services.Cache
+namespace M3U8Downloader.Services.Cache
 {
     public class SpanDataCacheService : ISpanDataCacheService
     {

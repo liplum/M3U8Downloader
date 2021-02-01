@@ -7,13 +7,13 @@ using M3U8Downloader.Core.Interfaces.IO;
 using M3U8Downloader.Core.Interfaces.Manager;
 using M3U8Downloader.Core.Interfaces.Net;
 using M3U8Downloader.Core.Interfaces.Tool;
-using M3U8Downloader.Service.Services.Cache;
-using M3U8Downloader.Service.Services.Global;
 using M3U8Downloader.Service.Services.IO;
 using M3U8Downloader.Service.Services.Manager;
 using M3U8Downloader.Service.Services.Net;
 using M3U8Downloader.Service.Services.Tool;
-using M3U8Downloader.Shell.Views;
+using M3U8Downloader.Services.Cache;
+using M3U8Downloader.Services.Global;
+using M3U8Downloader.Views;
 using MahApps.Metro.Controls;
 using Prism.Events;
 using Prism.Ioc;
@@ -25,7 +25,7 @@ using System.Threading;
 using System.Windows;
 using WPFLocalizeExtension.Engine;
 
-namespace M3U8Downloader.Shell
+namespace M3U8Downloader
 {
     /// <summary>
     /// Interaction logic for App.xaml

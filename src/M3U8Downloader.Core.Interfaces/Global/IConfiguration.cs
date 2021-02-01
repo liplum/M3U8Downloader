@@ -2,7 +2,9 @@
 {
     public interface IConfiguration
     {
-        public string DefaultTargetFolderPath
+        public void Save();
+
+        public string DefaultTargetDirectory
         {
             get; set;
         }
@@ -12,7 +14,12 @@
             get; set;
         }
 
-        public string DefaultCacheSpansFilePath
+        public string CacheSpanDirectory
+        {
+            get; set;
+        }
+
+        public int MaxParallelCount
         {
             get; set;
         }

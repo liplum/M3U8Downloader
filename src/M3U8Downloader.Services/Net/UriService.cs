@@ -4,7 +4,7 @@ using System;
 using System.IO;
 using System.Net.Http;
 
-namespace M3U8Downloader.Service.Services.Net
+namespace M3U8Downloader.Services.Net
 {
     public class UriService : IUriService
     {

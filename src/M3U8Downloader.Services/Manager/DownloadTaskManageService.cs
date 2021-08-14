@@ -1,4 +1,7 @@
-﻿using M3U8Downloader.Core.Events;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.Threading.Tasks;
+using M3U8Downloader.Core.Events;
 using M3U8Downloader.Core.Interfaces.Analysis;
 using M3U8Downloader.Core.Interfaces.Cache;
 using M3U8Downloader.Core.Interfaces.IO;
@@ -8,11 +11,8 @@ using M3U8Downloader.Core.Interfaces.Tool;
 using M3U8Downloader.Core.Models;
 using Prism.Events;
 using Prism.Ioc;
-using System;
-using System.Collections.ObjectModel;
-using System.Threading.Tasks;
 
-namespace M3U8Downloader.Service.Services.Manager
+namespace M3U8Downloader.Services.Manager
 {
     public class DownloadTaskManageService : IDownloadTaskManageService
     {
@@ -178,6 +178,11 @@ namespace M3U8Downloader.Service.Services.Manager
                        {
                            try
                            {
+                               if (string.IsNullOrEmpty(task.FileName))
+                               {
+                                   var timeStamp = DateTime.Now;
+                                   task.FileName = $"{timeStamp:yyyyMMddHHssff}";
+                               }
                                var content = _uriService.GetM3U8Content(task.Uri);
                                AddPer();
                                var spans = _analyser.GetEveryDownloadSpan(task, content);

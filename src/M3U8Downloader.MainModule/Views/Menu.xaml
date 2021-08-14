@@ -2,6 +2,7 @@
     x:Class="M3U8Downloader.MainModule.Views.Menu"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="clr-namespace:M3U8Downloader.MainModule.Controls"
     xmlns:core="clr-namespace:M3U8Downloader.Core;assembly=M3U8Downloader.Core"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:M3U8Downloader.MainModule.Views"
@@ -13,25 +14,31 @@
     prism:ViewModelLocator.AutoWireViewModel="True"
     mc:Ignorable="d">
     <StackPanel Orientation="Horizontal">
+        <controls:StartOrStopButton Width="32" State="Stopped" />
         <Button
+            Width="32"
             Command="{Binding StartAllTasksCommand}"
-            Content="Start"
+            Content="{StaticResource StartButtonIcon}"
             Style="{DynamicResource MahApps.Styles.Button.Circle}" />
         <Button
+            Width="32"
             Command="{Binding StopAllTasksCommand}"
-            Content="Stop"
+            Content="{StaticResource StopButtonIcon}"
             Style="{DynamicResource MahApps.Styles.Button.Circle}" />
         <Button
+            Width="32"
             Command="{Binding AddNewTaskCommand}"
-            Content="Add"
+            Content="{StaticResource AddButtonIcon}"
             Style="{DynamicResource MahApps.Styles.Button.Circle}" />
         <Button
+            Width="32"
             Command="{Binding RemoveCurrentTaskCommand}"
-            Content="Remove"
+            Content="{StaticResource CrossButtonIcon}"
             Style="{DynamicResource MahApps.Styles.Button.Circle}" />
         <Button
+            Width="32"
             Command="{Binding AppCommand.OpenSettingsCommand}"
-            Content="Setting"
+            Content="{StaticResource SettingButtonIcon}"
             Style="{DynamicResource MahApps.Styles.Button.Circle}" />
     </StackPanel>
 </UserControl>

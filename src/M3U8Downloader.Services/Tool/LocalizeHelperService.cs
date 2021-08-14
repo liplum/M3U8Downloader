@@ -1,7 +1,7 @@
 ﻿using M3U8Downloader.Core.Interfaces.Tool;
 using WPFLocalizeExtension.Extensions;
 
-namespace M3U8Downloader.Service.Services.Tool
+namespace M3U8Downloader.Services.Tool
 {
     public class LocalizeHelperService : ILocalizeHelperService
     {

@@ -1,4 +1,4 @@
-﻿<Control
+﻿<UserControl
     x:Class="M3U8Downloader.Views.Settings"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -6,12 +6,19 @@
     xmlns:local="clr-namespace:M3U8Downloader.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
+    xmlns:sty="m3u8"
     xmlns:prism="http://prismlibrary.com/"
     d:DesignHeight="450"
     d:DesignWidth="800"
     prism:ViewModelLocator.AutoWireViewModel="True"
     mc:Ignorable="d">
-    <Control.Resources />
+    <!--<UserControl.Resources>
+        <Style TargetType="ItemsControl">
+            <Setter Property="ItemTemplate" Value="{StaticResource }"></Setter>
+        </Style>
+    </UserControl.Resources>-->
+    
+    
     <!--<ItemsControl>
         <ItemsControl.Style>
             <Style TargetType="ItemsControl">
@@ -41,4 +48,4 @@
         <Label Content="Test 2" />
         <Label Content="Test 3" />
     </ItemsControl>-->
-</Control>
+</UserControl>

@@ -5,7 +5,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
 
-namespace M3U8Downloader.Service.Services.Manager
+namespace M3U8Downloader.Services.Manager
 {
     public class DownloadTaskStateMachineService : IDownloadTaskStateManageService
     {

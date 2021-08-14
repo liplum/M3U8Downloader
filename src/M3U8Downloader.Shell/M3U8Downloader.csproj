@@ -26,8 +26,9 @@
   <ItemGroup>
     <ProjectReference Include="..\M3U8Downloader.Core.Events\M3U8Downloader.Core.Events.csproj" />
     <ProjectReference Include="..\M3U8Downloader.Core\M3U8Downloader.Core.csproj" />
-    <ProjectReference Include="..\M3U8Downloader.Modules.MainModule\M3U8Downloader.MainModule.csproj" />
-    <ProjectReference Include="..\M3U8Downloader.Service.Services\M3U8Downloader.Services.csproj" />
+    <ProjectReference Include="..\M3U8Downloader.MainModule\M3U8Downloader.MainModule.csproj" />
+    <ProjectReference Include="..\M3U8Downloader.Services\M3U8Downloader.Services.csproj" />
+    <ProjectReference Include="..\M3U8Downloader.Styles\M3U8Downloader.Styles.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Properties\Config.Designer.cs">

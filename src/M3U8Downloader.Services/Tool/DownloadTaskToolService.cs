@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace M3U8Downloader.Service.Services.Tool
+namespace M3U8Downloader.Services.Tool
 {
     public class DownloadTaskToolService : IDownloadTaskToolService
     {

@@ -8,7 +8,7 @@ using M3U8Downloader.Core.Models;
 using System.Collections.Generic;
 using System.IO;
 
-namespace M3U8Downloader.Service.Services.IO
+namespace M3U8Downloader.Services.IO
 {
     public class VideoComposeService : IVideoComposeService
     {

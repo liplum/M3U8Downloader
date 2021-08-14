@@ -4,9 +4,23 @@
     <TargetFramework>net5.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <AppendTargetFrameworkToOutputPath>Flase</AppendTargetFrameworkToOutputPath>
+    <Authors>Liplum</Authors>
+    <Product>M3U8Downloader</Product>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DebugType>none</DebugType>
     <DebugSymbols>false</DebugSymbols>
   </PropertyGroup>
+  <ItemGroup>
+    <Page Remove="Settings.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Templates\Settings.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Templates\ButtonIcons.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
 </Project>

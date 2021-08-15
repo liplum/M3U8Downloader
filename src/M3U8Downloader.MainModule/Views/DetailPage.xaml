@@ -11,6 +11,8 @@
     xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:prism="http://prismlibrary.com/"
     xmlns:task="clr-namespace:M3U8Downloader.Core.Models;assembly=M3U8Downloader.Core.Models"
+    xmlns:viewmodels="clr-namespace:M3U8Downloader.MainModule.ViewModels"
+    d:DataContext="{d:DesignInstance Type=viewmodels:DetailPageViewModel}"
     lex:LocalizeDictionary.DesignCulture="en"
     lex:ResxLocalizationProvider.DefaultAssembly="M3U8Downloader.MainModule"
     lex:ResxLocalizationProvider.DefaultDictionary="Resources"
@@ -79,6 +81,7 @@
             <metro:MetroProgressBar Value="{Binding CurrentTask.Progress}" />
             <WrapPanel>
                 <Button Command="{Binding StartOrRetryCommand}" Content="{lex:Loc DetailPage_Start_Button}" />
+                <Button Command="{Binding SaveOrEditCommand}" Content="{Binding SaveOrEditButtonContent, Mode=TwoWay}" />
             </WrapPanel>
         </StackPanel>
     </StackPanel>

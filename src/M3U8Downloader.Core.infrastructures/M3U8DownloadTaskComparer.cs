@@ -21,7 +21,8 @@ namespace M3U8Downloader.Core.infrastructures
             return
                 string.IsNullOrEmpty(obj.Uri) &&
                 string.IsNullOrEmpty(obj.FileName) &&
-                string.IsNullOrEmpty(obj.TargetFolder)
+                string.IsNullOrEmpty(obj.TargetFolder) &&
+                obj.State == TaskState.EDITING
                 ;
         }
     }

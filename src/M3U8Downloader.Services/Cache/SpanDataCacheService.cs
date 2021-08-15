@@ -7,7 +7,7 @@ namespace M3U8Downloader.Services.Cache
 {
     public class SpanDataCacheService : ISpanDataCacheService
     {
-        private readonly ConcurrentDictionary<M3U8DownloadSpan, byte[]> _dataBase = new ConcurrentDictionary<M3U8DownloadSpan, byte[]>();
+        private readonly ConcurrentDictionary<M3U8DownloadSpan, byte[]> _dataBase = new();
 
         public SpanDataCacheService()
         {

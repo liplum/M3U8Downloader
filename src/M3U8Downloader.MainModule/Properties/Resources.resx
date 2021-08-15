@@ -141,4 +141,7 @@
   <data name="DetailPage_Address_Button" xml:space="preserve">
     <value>@DetailPage_Address_Button</value>
   </data>
+  <data name="DetailPage_Edit_Button" xml:space="preserve">
+    <value>@DetailPage_Edit_Button</value>
+  </data>
 </root>

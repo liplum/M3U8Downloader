@@ -6,7 +6,7 @@ namespace M3U8Downloader.MainModule.Controls
     /// <summary>
     /// Interaction logic for StartOrStopButton.xaml
     /// </summary>
-    public partial class StartOrStopButton : UserControl
+    public partial class StartOrStopButton : Button
     {
         public StartOrStopButton()
         {
@@ -37,11 +37,11 @@ namespace M3U8Downloader.MainModule.Controls
             {
                 case ButtonState.Started:
                     var stopButtonIcon = self.Resources["StopButtonIcon"];
-                    self.Button.Content = stopButtonIcon;
+                    self.Content = stopButtonIcon;
                     break;
                 case ButtonState.Stopped:
                     var startButtonIcon = self.Resources["StartButtonIcon"];
-                    self.Button.Content = startButtonIcon;
+                    self.Content = startButtonIcon;
                     break;
             }
             var oldValue = (ButtonState)e.OldValue;
@@ -55,6 +55,7 @@ namespace M3U8Downloader.MainModule.Controls
         private void ButtonClicked(object sender, RoutedEventArgs e)
         {
             State = State.Switch();
+            e.Handled = true;
         }
 
 

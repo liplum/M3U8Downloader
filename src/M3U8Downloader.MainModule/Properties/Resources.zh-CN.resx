@@ -141,4 +141,7 @@
   <data name="DetailPage_DefaultTarget" xml:space="preserve">
     <value>默认下载位置</value>
   </data>
+  <data name="DetailPage_Edit_Button" xml:space="preserve">
+    <value>编辑</value>
+  </data>
 </root>

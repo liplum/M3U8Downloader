@@ -271,7 +271,10 @@ namespace M3U8Downloader.Services.Manager
 
         public void EndEdit(M3U8DownloadTask task)
         {
-            _stateManager.Fire(task, TaskTrigger.END_EDIT);
+            if (task.State == TaskState.EDITING)
+            {
+                _stateManager.Fire(task, TaskTrigger.END_EDIT);
+            }
         }
 
         public void Edit(M3U8DownloadTask task)

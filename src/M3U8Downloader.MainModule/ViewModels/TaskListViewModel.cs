@@ -1,4 +1,8 @@
-﻿using M3U8Downloader.Core;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using M3U8Downloader.Core;
 using M3U8Downloader.Core.Events;
 using M3U8Downloader.Core.Interfaces.Global;
 using M3U8Downloader.Core.Interfaces.Manager;
@@ -8,10 +12,6 @@ using M3U8Downloader.Core.MVVM;
 using Prism.Events;
 using Prism.Ioc;
 using Stateless;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
 
 namespace M3U8Downloader.MainModule.ViewModels
 {
@@ -26,19 +26,19 @@ namespace M3U8Downloader.MainModule.ViewModels
         private readonly IConfiguration _config;
         #endregion
 
-        private enum DownloadState
+        private enum GlobalDownloadState
         {
             START_ALL, NOT_START_ALL
         }
 
-        private enum DownloadTrigger
+        private enum GlobalDownloadTrigger
         {
             START_ALL, STOP_ALL
         }
 
-        private readonly StateMachine<DownloadState, DownloadTrigger> _stateMachine;
+        private readonly StateMachine<GlobalDownloadState, GlobalDownloadTrigger> _stateMachine;
 
-        private DownloadState CurrentState
+        private GlobalDownloadState CurrentState
         {
             get => _stateMachine.State;
         }
@@ -47,13 +47,14 @@ namespace M3U8Downloader.MainModule.ViewModels
         {
             #region StateMachine Configure
 
-            _stateMachine = new StateMachine<DownloadState, DownloadTrigger>(DownloadState.NOT_START_ALL);
-            _stateMachine.Configure(DownloadState.NOT_START_ALL)
-                .Permit(DownloadTrigger.START_ALL, DownloadState.START_ALL);
+            _stateMachine = new StateMachine<GlobalDownloadState, GlobalDownloadTrigger>(GlobalDownloadState.NOT_START_ALL);
 
-            _stateMachine.Configure(DownloadState.START_ALL)
+            _stateMachine.Configure(GlobalDownloadState.NOT_START_ALL)
+                .Permit(GlobalDownloadTrigger.START_ALL, GlobalDownloadState.START_ALL);
+
+            _stateMachine.Configure(GlobalDownloadState.START_ALL)
                 .OnEntry(OnEntryStartAll)
-                .Permit(DownloadTrigger.STOP_ALL, DownloadState.NOT_START_ALL);
+                .Permit(GlobalDownloadTrigger.STOP_ALL, GlobalDownloadState.NOT_START_ALL);
 
             #endregion
 
@@ -71,7 +72,7 @@ namespace M3U8Downloader.MainModule.ViewModels
             _eventAggregator.GetEvent<DownloadTaskListNeedAddEvent>().Subscribe(OnDownloadTaskListNeedAdd);
             _eventAggregator.GetEvent<DownloadTaskListNeedRemoveEvent>().Subscribe(OnDownloadTaskListNeedRemove);
             _eventAggregator.GetEvent<WindowSizeChangedEvent>().Subscribe(OnWindowSizeChanged);
-            _eventAggregator.GetEvent<AllDownloadTasksCommandEvent>().Subscribe(OnAllDownloadTasksCommand);
+            _eventAggregator.GetEvent<GlobalDownloadCommandEvent>().Subscribe(OnAllDownloadTasksCommand);
             _eventAggregator.GetEvent<DownloadTaskStateChangedEvent>().Subscribe(OnDownloadTaskStateChanged);
             _eventAggregator.GetEvent<DownloadTaskActionEvent>().Subscribe(OnDownloadTaskNeedStart, (args) => args.ActionType == DownloadTaskActionEventArgs.Action.NEED_START
             );
@@ -100,7 +101,7 @@ namespace M3U8Downloader.MainModule.ViewModels
                     break;
                 case DownloadTaskStateChangedEventArgs.ChangeType.FINISHED:
                     {
-                        if (CurrentState == DownloadState.START_ALL)
+                        if (CurrentState == GlobalDownloadState.START_ALL)
                         {
                             StartNextTask();
                         }
@@ -120,17 +121,20 @@ namespace M3U8Downloader.MainModule.ViewModels
             }
         }
 
-        private void OnAllDownloadTasksCommand(AllDownloadTasksCommandEventArgs args)
+        private void OnAllDownloadTasksCommand(GlobalDownloadCommandEventArgs args)
         {
-            switch (args.TaskCommand)
+            switch (args.DownloadCommand)
             {
-                case AllDownloadTasksCommandEventArgs.Command.START:
-                    _stateMachine.Fire(DownloadTrigger.START_ALL);
+                case GlobalDownloadCommandEventArgs.Command.START:
+                    _stateMachine.Fire(GlobalDownloadTrigger.START_ALL);
                     break;
-                case AllDownloadTasksCommandEventArgs.Command.STOP:
-                    _stateMachine.Fire(DownloadTrigger.STOP_ALL);
+                case GlobalDownloadCommandEventArgs.Command.STOP:
+                    if (_stateMachine.State != GlobalDownloadState.NOT_START_ALL)
+                    {
+                        _stateMachine.Fire(GlobalDownloadTrigger.STOP_ALL);
+                    }
                     break;
-                case AllDownloadTasksCommandEventArgs.Command.REMOVE_FINISHED:
+                case GlobalDownloadCommandEventArgs.Command.REMOVE_FINISHED:
                     RemoveFinishedTask();
                     break;
                 default:

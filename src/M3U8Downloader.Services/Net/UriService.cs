@@ -14,7 +14,7 @@ namespace M3U8Downloader.Services.Net
         private const string FTP = "ftp";
         public string GetM3U8Content(Uri uri)
         {
-            Uri _uri = null;
+            Uri _uri;
             if (!uri.IsAbsoluteUri)
             {
                 _uri = new Uri(uri.AbsoluteUri);

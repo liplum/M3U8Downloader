@@ -1,6 +1,7 @@
 ﻿using M3U8Downloader.Core.Events;
 using M3U8Downloader.Core.Interfaces.Global;
 using M3U8Downloader.Core.MVVM;
+using M3U8Downloader.MainModule.Controls;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Ioc;
@@ -26,7 +27,7 @@ namespace M3U8Downloader.MainModule.ViewModels
 
         private void OnDownloadTaskListCountChanged(DownloadTaskListCountChangedEventArgs args)
         {
-            CanStart = CanStop = CanRemove = args.CurrentCount > 0;
+            CanRemove = args.CurrentCount > 0;
         }
         private void OnDownloadTaskStateChanged(DownloadTaskStateChangedEventArgs args)
         {
@@ -46,20 +47,6 @@ namespace M3U8Downloader.MainModule.ViewModels
             }
         }
 
-        private bool _canStart = false;
-        public bool CanStart
-        {
-            get => _canStart;
-            set => SetProperty(ref _canStart, value);
-        }
-
-        private bool _canStop = false;
-        public bool CanStop
-        {
-            get => _canStop;
-            set => SetProperty(ref _canStop, value);
-        }
-
         private bool _canRemove = false;
         public bool CanRemove
         {
@@ -67,42 +54,48 @@ namespace M3U8Downloader.MainModule.ViewModels
             set => SetProperty(ref _canRemove, value);
         }
 
-        #region DelegateCommand StartAllTasksCommand
-        private DelegateCommand _startAllTasksCommand;
-        public DelegateCommand StartAllTasksCommand =>
-            _startAllTasksCommand ??= new DelegateCommand(ExecuteStartAllTask, CanExecuteStartAllTask).ObservesCanExecute(() => CanStart);
-
-        private void ExecuteStartAllTask()
+        private ButtonState _startedStopedState = ButtonState.Stopped;
+        public ButtonState StartedStoppedState
         {
-            _eventAggregator.GetEvent<AllDownloadTasksCommandEvent>().Publish(
-                new AllDownloadTasksCommandEventArgs(
-                    AllDownloadTasksCommandEventArgs.Command.START)
+            get => _startedStopedState;
+            set => SetProperty(ref _startedStopedState, value);
+        }
+
+        #region DelegateCommand StartOrStopAllTasksCommand
+
+        private DelegateCommand _startOrStopAllTasksCommand;
+        public DelegateCommand StartOrStopAllTasksCommand =>
+            _startOrStopAllTasksCommand ??= new DelegateCommand(ExecuteStartOrStopAllTasksCommand);
+
+        void ExecuteStartOrStopAllTasksCommand()
+        {
+            switch (StartedStoppedState)
+            {
+                case ButtonState.Started:
+                    StopAllTasks();
+                    break;
+                case ButtonState.Stopped:
+                    StartAllTask();
+                    break;
+            }
+        }
+
+        private void StartAllTask()
+        {
+            _eventAggregator.GetEvent<GlobalDownloadCommandEvent>().Publish(
+                new GlobalDownloadCommandEventArgs(
+                    GlobalDownloadCommandEventArgs.Command.START)
+                );
+        }
+     
+        private void StopAllTasks()
+        {
+            _eventAggregator.GetEvent<GlobalDownloadCommandEvent>().Publish(
+                new GlobalDownloadCommandEventArgs(
+                    GlobalDownloadCommandEventArgs.Command.STOP)
                 );
         }
 
-        private bool CanExecuteStartAllTask()
-        {
-            return CanStart;
-        }
-        #endregion
-
-        #region DelegateCommand StopAllTasksCommand
-        private DelegateCommand _stopAllTasksCommand;
-        public DelegateCommand StopAllTasksCommand =>
-            _stopAllTasksCommand ??= new DelegateCommand(ExecuteStop, CanExecuteStop).ObservesCanExecute(() => CanStop);
-
-        private void ExecuteStop()
-        {
-            _eventAggregator.GetEvent<AllDownloadTasksCommandEvent>().Publish(
-                new AllDownloadTasksCommandEventArgs(
-                    AllDownloadTasksCommandEventArgs.Command.STOP)
-                );
-        }
-
-        private bool CanExecuteStop()
-        {
-            return CanStop;
-        }
         #endregion
 
         #region DelegateCommand AddNewTaskCommand

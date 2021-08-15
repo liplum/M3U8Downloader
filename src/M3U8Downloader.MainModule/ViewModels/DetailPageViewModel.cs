@@ -1,4 +1,8 @@
-﻿using M3U8Downloader.Core.Events;
+﻿using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
+using System.Reflection;
+using M3U8Downloader.Core.Events;
 using M3U8Downloader.Core.Interfaces.Manager;
 using M3U8Downloader.Core.Interfaces.Tool;
 using M3U8Downloader.Core.Models;
@@ -7,10 +11,6 @@ using Microsoft.WindowsAPICodePack.Dialogs;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Ioc;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
-using System.Reflection;
 using WPFLocalizeExtension.Engine;
 
 namespace M3U8Downloader.MainModule.ViewModels
@@ -41,6 +41,47 @@ namespace M3U8Downloader.MainModule.ViewModels
             set => SetProperty(ref _currentTask, value);
         }
 
+        private string _saveButtonContent;
+        private string _editButtonContent;
+
+
+        private string _saveOrEditButtonContent;
+        public string SaveOrEditButtonContent
+        {
+            get => _saveOrEditButtonContent;
+            set => SetProperty(ref _saveOrEditButtonContent, value);
+        }
+
+
+        public enum SaveOrEditAccessibilityEnum
+        {
+            CanSave, CanEdit, None
+        }
+
+
+        private SaveOrEditAccessibilityEnum _saveOrEditState = SaveOrEditAccessibilityEnum.CanSave;
+        public SaveOrEditAccessibilityEnum SaveOrEditAccessibility
+        {
+            get => _saveOrEditState;
+            set
+            {
+                if (SetProperty(ref _saveOrEditState, value))
+                {
+                    switch (_saveOrEditState)
+                    {
+                        case SaveOrEditAccessibilityEnum.CanSave:
+                        case SaveOrEditAccessibilityEnum.None:
+                            SaveOrEditButtonContent = _saveButtonContent;
+                            break;
+                        case SaveOrEditAccessibilityEnum.CanEdit:
+                            SaveOrEditButtonContent = _editButtonContent;
+                            break;
+
+                    }
+                }
+            }
+        }
+
         public DetailPageViewModel(IContainerProvider containerProvider)
         {
             _provider = containerProvider;
@@ -66,7 +107,7 @@ namespace M3U8Downloader.MainModule.ViewModels
 
         private void OnDownloadTaskActed(DownloadTaskActionEventArgs obj)
         {
-            throw new System.NotImplementedException();
+            //throw new System.NotImplementedException();
         }
 
         private void OnCurrentTaskChanged(object sender, PropertyChangedEventArgs e)
@@ -87,6 +128,8 @@ namespace M3U8Downloader.MainModule.ViewModels
         private void OnLanguageChanged(object sender, PropertyChangedEventArgs e)
         {
             DefaultTargetFolderText = GetLocString(key: nameof(Properties.Resources.DetailPage_DefaultTarget));
+            _saveButtonContent = GetLocString(key: nameof(Properties.Resources.DetailPage_Save_Button));
+            _editButtonContent = GetLocString(key: nameof(Properties.Resources.DetailPage_Edit_Button));
         }
 
         private string GetLocString(string key)
@@ -116,8 +159,27 @@ namespace M3U8Downloader.MainModule.ViewModels
                     CurrentTask = selected;
                     CurrentTask.PropertyChanged += OnCurrentTaskChanged;
                     _taskManager.Edit(CurrentTask);
+                    ChangeSaveAndEditButtonContent();
+                }
+
+                void ChangeSaveAndEditButtonContent()
+                {
+                    switch (selected.State)
+                    {
+                        case TaskState.NOT_STARTED:
+                        case TaskState.ERROR:
+                            SaveOrEditAccessibility = SaveOrEditAccessibilityEnum.CanEdit;
+                            break;
+                        case TaskState.EDITING:
+                            SaveOrEditAccessibility = SaveOrEditAccessibilityEnum.CanSave;
+                            break;
+                        default:
+                            SaveOrEditAccessibility = SaveOrEditAccessibilityEnum.None;
+                            break;
+                    }
                 }
             }
+
         }
 
         /// <summary>
@@ -202,6 +264,32 @@ namespace M3U8Downloader.MainModule.ViewModels
 
             return _tool.CanStart(CurrentTask) || _tool.CanRetry(CurrentTask);
         }
+        #endregion
+
+        #region SaveOrEditCommand
+        private DelegateCommand _saveOrEditCommand;
+        public DelegateCommand SaveOrEditCommand =>
+            _saveOrEditCommand ??= new DelegateCommand(ExecuteSaveOrEditCommand, CanExecuteSaveOrEditCommand)
+            .ObservesProperty(() => SaveOrEditAccessibility);
+
+        void ExecuteSaveOrEditCommand()
+        {
+            switch (SaveOrEditAccessibility)
+            {
+                case SaveOrEditAccessibilityEnum.CanSave:
+                    _taskManager.EndEdit(CurrentTask);
+                    break;
+                case SaveOrEditAccessibilityEnum.CanEdit:
+                    _taskManager.Edit(CurrentTask);
+                    break;
+            }
+        }
+
+        bool CanExecuteSaveOrEditCommand()
+        {
+            return SaveOrEditAccessibility != SaveOrEditAccessibilityEnum.None;
+        }
+
         #endregion
 
         private bool _canEidt;

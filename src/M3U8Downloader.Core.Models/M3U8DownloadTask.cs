@@ -1,5 +1,5 @@
-﻿using Prism.Mvvm;
-using System;
+﻿using System;
+using Prism.Mvvm;
 
 namespace M3U8Downloader.Core.Models
 {

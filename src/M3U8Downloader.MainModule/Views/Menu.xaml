@@ -9,21 +9,18 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:prism="http://prismlibrary.com/"
+    xmlns:viewmodels="clr-namespace:M3U8Downloader.MainModule.ViewModels"
     MinWidth="600"
     MinHeight="32"
+    d:DataContext="{d:DesignInstance Type=viewmodels:MenuViewModel}"
     prism:ViewModelLocator.AutoWireViewModel="True"
     mc:Ignorable="d">
     <StackPanel Orientation="Horizontal">
-        <controls:StartOrStopButton Width="32" State="Stopped" />
-        <Button
+        <controls:StartOrStopButton
             Width="32"
-            Command="{Binding StartAllTasksCommand}"
+            Command="{Binding StartOrStopAllTasksCommand}"
             Content="{StaticResource StartButtonIcon}"
-            Style="{DynamicResource MahApps.Styles.Button.Circle}" />
-        <Button
-            Width="32"
-            Command="{Binding StopAllTasksCommand}"
-            Content="{StaticResource StopButtonIcon}"
+            State="{Binding StartedStoppedState, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
             Style="{DynamicResource MahApps.Styles.Button.Circle}" />
         <Button
             Width="32"

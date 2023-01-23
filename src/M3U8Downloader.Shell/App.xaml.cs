@@ -64,15 +64,15 @@ namespace M3U8Downloader
 
             containerRegistry.RegisterSingleton<IVideoComposeService, VideoComposeService>();
 
-            containerRegistry.Register<IM3U8DownloadTaskComparer, M3U8DownloadTaskComparer>();
+            containerRegistry.RegisterSingleton<IM3U8DownloadTaskComparer, M3U8DownloadTaskComparer>();
 
-            containerRegistry.Register<IDownloadTaskStateManageService, DownloadTaskStateMachineService>();
+            containerRegistry.RegisterSingleton<IDownloadTaskStateManageService, DownloadTaskStateMachineService>();
 
             containerRegistry.RegisterSingleton<ILocalizeHelperService, LocalizeHelperService>();
 
             containerRegistry.RegisterSingleton<IApplicationCommand, ApplicationCommand>();
 
-            containerRegistry.Register<IIOService, IOService>();
+            containerRegistry.RegisterSingleton<IIOService, IOService>();
 
             containerRegistry.RegisterInstance(new HttpClient());
 

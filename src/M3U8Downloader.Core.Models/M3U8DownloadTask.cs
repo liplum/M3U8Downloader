@@ -11,7 +11,7 @@ namespace M3U8Downloader.Core.Models
         NOT_STARTED,
 
         /// <summary>
-        /// It've already started but not is downloading.
+        /// It has already started but is not being downloaded.
         /// </summary>
         STARTED,
 

@@ -3,9 +3,7 @@ using System.Windows.Controls;
 
 namespace M3U8Downloader.MainModule.Controls
 {
-    /// <summary>
-    /// Interaction logic for StartOrStopButton.xaml
-    /// </summary>
+
     public partial class StartOrStopButton : Button
     {
         public StartOrStopButton()

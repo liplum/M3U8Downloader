@@ -16,8 +16,7 @@ namespace M3U8Downloader.ViewModels
 
         private void ExecuteWindowSizeChangedCommand(object param)
         {
-            var element = param as FrameworkElement;
-            if (element is not null)
+            if (param is FrameworkElement element)
             {
                 _eventAggregator.GetEvent<WindowSizeChangedEvent>().Publish(
                     new WindowSizeChangedEventArgs

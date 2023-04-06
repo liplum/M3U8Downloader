@@ -10,11 +10,9 @@ namespace M3U8Downloader.Services.Global
             get => Default.DefaultTargetDirectory;
             set
             {
-                if (!Default.DefaultTargetDirectory.Equals(value))
-                {
-                    Default.DefaultTargetDirectory = value;
-                    Save();
-                }
+                if (Default.DefaultTargetDirectory.Equals(value)) return;
+                Default.DefaultTargetDirectory = value;
+                Save();
             }
         }
         public string DefaultVideoFormat
@@ -22,11 +20,9 @@ namespace M3U8Downloader.Services.Global
             get => Default.DefaultVideoFormat;
             set
             {
-                if (!Default.DefaultVideoFormat.Equals(value))
-                {
-                    Default.DefaultVideoFormat = value;
-                    Save();
-                }
+                if (Default.DefaultVideoFormat.Equals(value)) return;
+                Default.DefaultVideoFormat = value;
+                Save();
             }
         }
         public string CacheSpanDirectory
@@ -34,11 +30,9 @@ namespace M3U8Downloader.Services.Global
             get => Default.CacheSpanDirectory;
             set
             {
-                if (!Default.CacheSpanDirectory.Equals(value))
-                {
-                    Default.CacheSpanDirectory = value;
-                    Save();
-                }
+                if (Default.CacheSpanDirectory.Equals(value)) return;
+                Default.CacheSpanDirectory = value;
+                Save();
             }
         }
 
@@ -47,11 +41,9 @@ namespace M3U8Downloader.Services.Global
             get => Default.MaxParallelCount;
             set
             {
-                if (!Default.MaxParallelCount.Equals(value))
-                {
-                    Default.MaxParallelCount = value;
-                    Save();
-                }
+                if (Default.MaxParallelCount.Equals(value)) return;
+                Default.MaxParallelCount = value;
+                Save();
             }
         }
 
